@@ -1,0 +1,27 @@
+permissions:
+  contents: read
+
+name: Build and Test
+on:
+  pull_request:
+    push:
+    branches: ["dev"]
+
+jobs:
+  build-and-test:
+    name: Build and Test Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: maven
+      - name: Build and Run Tests
+        env:
+          SPRING_PROFILES_ACTIVE: test
+        run: ./mvnw clean test --batch-mode --no-transfer-progress
