@@ -1,7 +1,9 @@
 package com.pecunia.api.controller;
 
+import com.pecunia.api.dto.UserLoginDTO;
 import com.pecunia.api.dto.UserRegistrationDTO;
 import com.pecunia.api.model.User;
+import com.pecunia.api.security.AuthenticationService;
 import com.pecunia.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,13 @@ import java.util.Set;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-  private final UserService userService;
 
-  public AuthController(UserService userService) {
-    this.userService = userService;
+  private final UserService userService;
+  private final AuthenticationService authenticationService;
+
+  public AuthController(UserService userService, AuthenticationService authenticationService) {
+      this.userService = userService;
+      this.authenticationService = authenticationService;
   }
 
   @PostMapping("/register")
@@ -31,4 +36,14 @@ public class AuthController {
 
     return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
   }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> authenticate(@RequestBody UserLoginDTO userLoginDTO) {
+        String token = authenticationService.authenticate(
+            userLoginDTO.getEmail(),
+            userLoginDTO.getPassword()
+        );
+
+        return ResponseEntity.ok(token);
+    }
 }
