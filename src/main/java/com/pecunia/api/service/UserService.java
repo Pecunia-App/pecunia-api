@@ -29,12 +29,14 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public User registerUser(String email, String password, Set<String> roles) {
+    public User registerUser(String firstname, String lastname, String email, String password, Set<String> roles) {
         if(userRepository.existsByEmail(email)) {
             throw new RuntimeException("Cet email est déjà utilisé");
         }
 
         User user = new User();
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setRoles(roles);
@@ -56,16 +58,42 @@ public class UserService {
         return userMapper.convertToDTO(user);
     }
 
+    public List<UserDTO> getUserByFirstname(String searchTerms) {
+      List<User> users = userRepository.findByFirstname(searchTerms);
+      return users.stream().map(userMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<UserDTO> getUserByLastname(String searchTerms) {
+      List<User> users = userRepository.findByLastname(searchTerms);
+      return users.stream().map(userMapper::convertToDTO).collect(Collectors.toList());
+    }
+
     public UserDTO updateUser(Long id, User userDetails) {
+
         User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             return null;
         }
 
-        user.setFirstname(userDetails.getFirstname());
-        user.setLastname(userDetails.getLastname());
-        user.setEmail(userDetails.getEmail());
+        System.out.println("Received user details: " + userDetails);
+      System.out.println("Received user details: " + userDetails.getFirstname());
+
+        if (userDetails.getFirstname() != null) {
+          user.setFirstname(userDetails.getFirstname());
+        }
+
+        if (userDetails.getLastname() != null) {
+          user.setLastname(userDetails.getLastname());
+        }
+
+        if (userDetails.getProfilePicture() != null) {
+          user.setProfilePicture(userDetails.getProfilePicture());
+        }
+
+        if (userDetails.getEmail() != null) {
+          user.setEmail(userDetails.getEmail());
+        }
  
         User updatedUser = userRepository.save(user);
         return userMapper.convertToDTO(updatedUser);
