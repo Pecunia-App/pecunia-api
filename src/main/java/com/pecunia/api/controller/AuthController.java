@@ -4,13 +4,12 @@ import com.pecunia.api.dto.UserLoginDTO;
 import com.pecunia.api.dto.UserRegistrationDTO;
 import com.pecunia.api.model.User;
 import com.pecunia.api.security.AuthenticationService;
+import com.pecunia.api.security.TokenBlackList;
 import com.pecunia.api.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -20,15 +19,19 @@ public class AuthController {
 
   private final UserService userService;
   private final AuthenticationService authenticationService;
+  private final TokenBlackList tokenBlackList;
 
-  public AuthController(UserService userService, AuthenticationService authenticationService) {
+  public AuthController(UserService userService, AuthenticationService authenticationService, TokenBlackList tokenBlackList) {
       this.userService = userService;
       this.authenticationService = authenticationService;
+      this.tokenBlackList = tokenBlackList;
   }
 
   @PostMapping("/register")
-  public ResponseEntity<User> register(@RequestBody UserRegistrationDTO userRegistrationDTO) {
+  public ResponseEntity<User> register(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
     User registeredUser = userService.registerUser(
+            userRegistrationDTO.getFirstname(),
+            userRegistrationDTO.getLastname(),
             userRegistrationDTO.getEmail(),
             userRegistrationDTO.getPassword(),
             Set.of("ROLE_USER")
@@ -46,4 +49,11 @@ public class AuthController {
 
         return ResponseEntity.ok(token);
     }
+
+  @PostMapping("/logout")
+  public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
+    String token = authorizationHeader.substring(7);
+    tokenBlackList.addToBlacklist(token);
+    return ResponseEntity.ok("Logout successful");
+  }
 }
