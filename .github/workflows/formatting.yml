@@ -1,0 +1,15 @@
+name: Format with Google Java Format
+
+on:
+  pull_request:
+    push:
+      branches: [dev]
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: axel-op/googlejavaformat-action@v4
+        with:
+          args: "--skip-sorting-imports --replace"
