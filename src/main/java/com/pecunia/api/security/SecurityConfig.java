@@ -57,8 +57,10 @@ public class SecurityConfig {
       config.setAllowCredentials(true);
       return config;
     }))
-    .authorizeHttpRequests(auth -> auth.
-        anyRequest().permitAll()
+    .authorizeHttpRequests(auth -> auth
+      .requestMatchers("/auth/**").permitAll()
+      .requestMatchers("/auth/logout").permitAll()
+      .anyRequest().authenticated()
     )
     .userDetailsService(customUserDetailsService)
     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -72,8 +74,8 @@ public class SecurityConfig {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+  @Bean
+  public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
     }
 }
