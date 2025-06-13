@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
+@Table(name = "`user`")
 public class User implements UserDetails {
 
     @Override
