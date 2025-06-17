@@ -1,0 +1,35 @@
+services:
+  backend:
+    image: txrigxn/pecunia-api:latest
+    ports:
+      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:${DB_DOCKER_PORT}/${DB_DATABASE}?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./src/:/app/src
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:latest
+    restart: always
+    ports:
+      - ${DB_LOCAL_PORT}:${DB_DOCKER_PORT}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
