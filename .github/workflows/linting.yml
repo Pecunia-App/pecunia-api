@@ -1,9 +1,10 @@
-name: Lint with Checkstyle
+name: CI - Lint with Checkstyle
 
 on:
   pull_request:
-    push:
-      branches: [dev]
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
 
 jobs:
   checkstyle:

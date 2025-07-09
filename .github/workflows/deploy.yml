@@ -23,10 +23,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
       - name: Build and Push Docker Image
         run: |
           docker build -t txrigxn/pecunia-api:latest . || exit 1
           docker push txrigxn/pecunia-api:latest
+
       - name: Deploy to Server
         env:
           SSHKEY: ${{ secrets.SSHKEY }}
@@ -39,7 +41,7 @@ jobs:
           echo "$SSHKEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_ed25519 ${VPS_USER}@${VPS_HOST}
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
 
           echo "Pulling Docker images..."
           docker pull txrigxn/pecunia-api:latest || exit 1
