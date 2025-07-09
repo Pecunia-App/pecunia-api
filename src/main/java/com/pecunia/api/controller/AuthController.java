@@ -9,6 +9,7 @@ import com.pecunia.api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -29,6 +30,20 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<User> register(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
+    User registeredUser = userService.registerUser(
+            userRegistrationDTO.getFirstname(),
+            userRegistrationDTO.getLastname(),
+            userRegistrationDTO.getEmail(),
+            userRegistrationDTO.getPassword(),
+            Set.of("ROLE_USER")
+    );
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/create-user")
+  public ResponseEntity<User> createUser(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
     User registeredUser = userService.registerUser(
             userRegistrationDTO.getFirstname(),
             userRegistrationDTO.getLastname(),
