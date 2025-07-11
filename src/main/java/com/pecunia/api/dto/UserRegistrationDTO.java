@@ -1,24 +1,28 @@
 package com.pecunia.api.dto;
 
 import com.pecunia.api.security.PasswordMatches;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 @PasswordMatches
+@Schema(name = "User Registration DTO", description = "Use password matcher and a regex")
 public class UserRegistrationDTO {
 
   @NotBlank(message = "Le prénom est obligatoire.")
+  @Pattern(regexp = "^[A-Za-zÀ-ÿ\\-]+$", message = "Le prénom ne doit contenir que des lettres ou des tirets sans espaces.")
   private String firstname;
 
   @NotBlank(message = "Le nom est obligatoire.")
+  @Pattern(regexp = "^[A-Za-zÀ-ÿ\\-]+$", message = "Le nom ne doit contenir que des lettres ou des tirets sans espaces.")
   private String lastname;
 
   @Email(message = "Email invalide.")
   private String email;
 
   @NotBlank(message = "Le mot de passe est obligatoire.")
-  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{12,}$",
+  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+!?=])(?=\\S+$).{12,}$",
   message = "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre et un caractère spécial.")
   private String password;
 
