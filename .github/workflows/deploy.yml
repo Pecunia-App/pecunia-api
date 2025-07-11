@@ -6,15 +6,13 @@ on:
     types:
       - completed
 
-  push:
-    branches:
-      - main
-
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
 
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -39,16 +37,6 @@ jobs:
           echo "$SSHKEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_ed25519 ${VPS_USER}@${VPS_HOST}
-
-          echo "Pulling Docker images..."
-          docker pull txrigxn/pecunia-api:latest || exit 1
-
-          echo "Shutting down existing containers..."
-          docker compose down || exit 1
-
-          echo "Starting new container..."
-          docker compose up -d || exit 1
-
+          ssh -i ~/.ssh/id_ed25519 ${VPS_USER}@${VPS_HOST} "/home/pecunia/pecunia/deploy.sh"
       - name: cleanup
         run: rm -rf ~/.ssh
