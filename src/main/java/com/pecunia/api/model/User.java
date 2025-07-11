@@ -1,23 +1,15 @@
 package com.pecunia.api.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-/** Entity User. */
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Entity
 @Table(name = "`user`")
 public class User extends BaseEntity implements UserDetails {
@@ -60,11 +52,13 @@ public class User extends BaseEntity implements UserDetails {
 
   private String lastname;
 
-  private String profilePicture;
-
   private String email;
 
   private String password;
+
+  @OneToOne
+  @JoinColumn(name = "profile_picture_id")
+  private ProfilePicture profilePicture;
 
   @ElementCollection(fetch = FetchType.EAGER)
   private Set<String> roles = new HashSet<>();
@@ -102,14 +96,6 @@ public class User extends BaseEntity implements UserDetails {
 
   public void setLastname(String lastname) {
     this.lastname = lastname;
-  }
-
-  public String getProfilePicture() {
-    return profilePicture;
-  }
-
-  public void setProfilePicture(String profilePicture) {
-    this.profilePicture = profilePicture;
   }
 
   public String getEmail() {
