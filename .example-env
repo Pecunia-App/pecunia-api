@@ -15,9 +15,7 @@ API_KEY=you_can_blank_it_for_now
 JWT_SECRET_KEY=you_can_blank_it_for_now
 TIME_OUT_JWT=you_can_blank_it_for_now
 
-#spring doc  
-DOC_PATH=/you_can_blank_it_for_now
-SWAGGER_PATH=you_can_blank_it_for_now
-SWAGGER_OPERATION=you_can_blank_it_for_now
+-#spring doc
+-DOC_PATH=
 
 CORS_ALLOWED_ORIGIN=*
