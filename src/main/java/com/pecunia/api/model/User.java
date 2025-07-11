@@ -54,11 +54,13 @@ public class User implements UserDetails {
 
   private String lastname;
 
-  private String profilePicture;
-
   private String email;
 
   private String password;
+
+  @OneToOne
+  @JoinColumn(name = "profile_picture_id")
+  private ProfilePicture profilePicture;
 
   @ElementCollection(fetch = FetchType.EAGER)
   private Set<String> roles = new HashSet<>();
@@ -71,7 +73,15 @@ public class User implements UserDetails {
     this.id = id;
   }
 
-    public String getFirstname() {
+  public ProfilePicture getProfilePicture() {
+    return profilePicture;
+  }
+
+  public void setProfilePicture(ProfilePicture profilePicture) {
+    this.profilePicture = profilePicture;
+  }
+
+  public String getFirstname() {
         return firstname;
     }
 
@@ -87,13 +97,6 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
 
     public String getEmail() {
     return email;

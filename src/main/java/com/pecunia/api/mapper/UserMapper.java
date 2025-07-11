@@ -4,6 +4,8 @@ import com.pecunia.api.dto.UserDTO;
 import com.pecunia.api.model.User;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+
 @Component
 public class UserMapper {
 
@@ -13,8 +15,12 @@ public class UserMapper {
         userDTO.setId(user.getId());
         userDTO.setFirstname(user.getFirstname());
         userDTO.setLastname(user.getLastname());
-        userDTO.setProfilePicture(user.getProfilePicture());
         userDTO.setEmail(user.getEmail());
+
+        if (user.getProfilePicture() != null && user.getProfilePicture().getPicture() != null) {
+          String base64Picture = Base64.getEncoder().encodeToString(user.getProfilePicture().getPicture());
+          userDTO.setProfilePicture(base64Picture);
+        }
 
         return userDTO;
     }
