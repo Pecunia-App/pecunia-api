@@ -60,6 +60,7 @@ public class SecurityConfig {
     .authorizeHttpRequests(auth -> auth
       .requestMatchers("/auth/**").permitAll()
       .requestMatchers("/auth/logout").permitAll()
+      .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/pecunia-docs/**").permitAll()
       .anyRequest().authenticated()
     )
     .userDetailsService(customUserDetailsService)
