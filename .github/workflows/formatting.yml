@@ -1,9 +1,10 @@
-name: Format with Google Java Format
+name: CI - Format with Google Java Format
 
 on:
   pull_request:
-    push:
-      branches: [dev]
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
 
 jobs:
   formatting:

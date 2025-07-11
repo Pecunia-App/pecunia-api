@@ -4,8 +4,9 @@ permissions:
 name: CI - Build and Test
 on:
   pull_request:
-    push:
-    branches: ["dev", "main"]
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
 
 jobs:
   build-and-test:
