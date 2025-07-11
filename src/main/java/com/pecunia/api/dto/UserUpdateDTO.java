@@ -1,5 +1,6 @@
 package com.pecunia.api.dto;
 
+import com.pecunia.api.model.ProfilePicture;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,11 @@ public class UserUpdateDTO {
   private String lastname;
 
   @NotBlank(message = "La photo est obligatoire.")
-  private String profilePicture;
+  private ProfilePicture profilePicture;
+
+  public ProfilePicture getProfilePicture() {
+    return profilePicture;
+  }
 
   @Email(message = "Email invalide.")
   @NotBlank(message = "L'email est obligatoire.")
@@ -32,16 +37,12 @@ public class UserUpdateDTO {
     return lastname;
   }
 
+  public void setProfilePicture(ProfilePicture profilePicture) {
+    this.profilePicture = profilePicture;
+  }
+
   public void setLastname(String lastname) {
     this.lastname = lastname;
-  }
-
-  public String getProfilePicture() {
-    return profilePicture;
-  }
-
-  public void setProfilePicture(String profilePicture) {
-    this.profilePicture = profilePicture;
   }
 
   public String getEmail() {
