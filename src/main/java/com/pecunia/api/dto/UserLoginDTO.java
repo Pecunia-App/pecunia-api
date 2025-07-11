@@ -1,5 +1,8 @@
 package com.pecunia.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "User Login DTO", description = "Represents a user for login")
 public class UserLoginDTO {
 
   private String email;
