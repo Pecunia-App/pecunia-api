@@ -13,7 +13,7 @@ public class ProfilePicture {
   @Column(nullable = false, columnDefinition ="MEDIUMBLOB")
   private byte[] picture;
 
-  @OneToOne(mappedBy = "profilePicture", cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "profilePicture")
   private User user;
 
   // getter and setter
