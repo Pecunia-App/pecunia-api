@@ -58,8 +58,8 @@ public class User implements UserDetails {
 
   private String password;
 
-  @OneToOne
-  @JoinColumn(name = "profile_picture_id")
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "profile_picture_id", unique = true)
   private ProfilePicture profilePicture;
 
   @ElementCollection(fetch = FetchType.EAGER)

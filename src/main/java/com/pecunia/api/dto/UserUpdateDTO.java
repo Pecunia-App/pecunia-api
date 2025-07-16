@@ -3,6 +3,7 @@ package com.pecunia.api.dto;
 import com.pecunia.api.model.ProfilePicture;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class UserUpdateDTO {
 
@@ -12,7 +13,7 @@ public class UserUpdateDTO {
   @NotBlank(message = "Le nom est obligatoire.")
   private String lastname;
 
-  @NotBlank(message = "La photo est obligatoire.")
+  @NotNull(message = "La photo est obligatoire.")
   private ProfilePicture profilePicture;
 
   public ProfilePicture getProfilePicture() {
