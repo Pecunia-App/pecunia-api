@@ -4,6 +4,7 @@ import com.pecunia.api.model.ProfilePicture;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "User Update DTO", description = "Represents a user for update")
 public class UserUpdateDTO {
@@ -14,7 +15,7 @@ public class UserUpdateDTO {
   @NotBlank(message = "Le nom est obligatoire.")
   private String lastname;
 
-  @NotBlank(message = "La photo est obligatoire.")
+  @NotNull(message = "La photo est obligatoire.")
   private ProfilePicture profilePicture;
 
   public ProfilePicture getProfilePicture() {
