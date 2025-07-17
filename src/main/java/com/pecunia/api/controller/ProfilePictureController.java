@@ -33,11 +33,41 @@ public class ProfilePictureController {
   public ResponseEntity<ProfilePictureDTO> uploadProfilePicture(
           @PathVariable Long userId,
           @RequestParam("file") MultipartFile file) throws IOException {
-
     byte[] resizedImage = profilePictureService.resizeAndValidateImage(file);
-    ProfilePictureDTO savedPicture = profilePictureService.saveProfilePicture(userId, resizedImage);
-    return ResponseEntity.status(HttpStatus.CREATED).body(savedPicture);
+    try {
+      ProfilePictureDTO savedPicture = profilePictureService.saveProfilePicture(userId, resizedImage);
+      return ResponseEntity.status(HttpStatus.CREATED).body(savedPicture);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+  }
+
+    @PreAuthorize("#userId == authentication.principal.id")
+    @PutMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProfilePictureDTO> updateProfilePicture (
+            @PathVariable Long userId,
+            @RequestParam("file") MultipartFile file) throws IOException {
+      byte[] resizedImage = profilePictureService.resizeAndValidateImage(file);
+      try {
+        ProfilePictureDTO updatedPicture = profilePictureService.updateProfilePicture(userId, resizedImage);
+        return ResponseEntity.ok(updatedPicture);
+      } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      }
+    }
+
+  @PreAuthorize("#userId == authentication.principal.id")
+  @DeleteMapping("/{userId}")
+  public ResponseEntity<Void> deleteProfilePicture(@PathVariable Long userId) {
+    boolean deleted = profilePictureService.deleteProfilePicture(userId);
+    if (deleted) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 }
+
+
 
 
