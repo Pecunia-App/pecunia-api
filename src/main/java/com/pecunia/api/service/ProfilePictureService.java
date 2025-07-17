@@ -7,6 +7,7 @@ import com.pecunia.api.model.User;
 import com.pecunia.api.repository.ProfilePictureRepository;
 import com.pecunia.api.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -63,9 +64,7 @@ public class ProfilePictureService {
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
     if (user.getProfilePicture() != null) {
-      ProfilePicture oldPicture = user.getProfilePicture();
-      user.setProfilePicture(null);
-      profilePictureRepository.delete(oldPicture);
+      throw new RuntimeException("L'utilisateur possède déjà une photo de profil. Utilisez la fonction de mise à jour à la place.");
     }
 
     ProfilePicture profilePicture = new ProfilePicture();
@@ -79,6 +78,7 @@ public class ProfilePictureService {
     return profilePictureMapper.convertToDTO(profilePicture);
   }
 
+
   public ProfilePictureDTO getProfilePicture(Long userId) {
     User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
@@ -88,5 +88,34 @@ public class ProfilePictureService {
     }
 
     return profilePictureMapper.convertToDTO(user.getProfilePicture());
+  }
+
+  public ProfilePictureDTO updateProfilePicture(Long userId, byte[] pictureData) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+    if (user.getProfilePicture() == null) {
+      throw new RuntimeException("Aucune photo de profil existante à mettre à jour");
+    }
+
+    ProfilePicture profilePicture = user.getProfilePicture();
+    profilePicture.setPicture(pictureData);
+    profilePicture = profilePictureRepository.save(profilePicture);
+
+    return profilePictureMapper.convertToDTO(profilePicture);
+  }
+
+  public boolean deleteProfilePicture(@PathVariable Long userId) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Utilisateur introuvable."));
+    if (user.getProfilePicture() == null) {
+      return false;
+    }
+    ProfilePicture profilePicture = user.getProfilePicture();
+    user.setProfilePicture(null);
+    userRepository.save(user);
+    profilePictureRepository.delete(profilePicture);
+
+    return true;
   }
 }
