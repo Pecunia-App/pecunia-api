@@ -2,7 +2,6 @@ package com.pecunia.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Annonation SpringBoot.
@@ -20,15 +19,5 @@ public class ApiApplication {
    */
   public static void main(final String[] args) {
     SpringApplication.run(ApiApplication.class, args);
-  }
-
-  /**
-   * Test endpoint.
-   *
-   * @return String
-   */
-  @GetMapping("/hello")
-  public final String sayHello() {
-    return "Hello Wolrd!";
   }
 }
