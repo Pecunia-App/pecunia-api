@@ -1,6 +1,14 @@
 package com.pecunia.api.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/** Entity User. */
 @Entity
 @Table(name = "`user`")
 public class User implements UserDetails {
@@ -59,6 +68,17 @@ public class User implements UserDetails {
 
   @ElementCollection(fetch = FetchType.EAGER)
   private Set<String> roles = new HashSet<>();
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Wallet wallet;
+
+  public Wallet getWallet() {
+    return wallet;
+  }
+
+  public void setWallet(Wallet wallet) {
+    this.wallet = wallet;
+  }
 
   public Long getId() {
     return id;
