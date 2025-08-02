@@ -1,7 +1,14 @@
 package com.pecunia.api.controller;
 
+import com.pecunia.api.dto.wallet.WalletCreateDto;
+import com.pecunia.api.dto.wallet.WalletDto;
+import com.pecunia.api.dto.wallet.WalletUpdateDto;
+import com.pecunia.api.service.wallet.WalletService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,21 +16,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pecunia.api.model.Wallet;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-
-/* Wallet Controller */
+/** WalletController. */
 @RestController
-@Tag(name = "Wallet Controller", description = "Handle CRUD Walet")
+@Tag(name = "Wallet Controller", description = "Handle CRUD Wallet")
 @RequestMapping("/wallets")
 public class WalletController {
+
   private final WalletService walletService;
 
   public WalletController(WalletService walletService) {
@@ -39,7 +40,7 @@ public class WalletController {
   @Operation(summary = "Return all wallets", description = "Role Admin Require")
   public ResponseEntity<List<WalletDto>> getAllWallets() {
     List<WalletDto> wallets = walletService.getAllWallets();
-    return wallets.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(wallets)l
+    return wallets.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(wallets);
   }
 
   /**
@@ -68,9 +69,9 @@ public class WalletController {
   @Operation(
       summary = "Update a specific Wallet by Id",
       description = "Role Admin require or login with correct user id.")
-  public ResponseEntity<WalletUpdateDto> updateWallet(
-      @PathVariable Long id, @Valid @RequestBody Wallet wallet) {
-    WalletUpdateDto updateWallet = walletService.update(id, wallet);
+  public ResponseEntity<WalletDto> updateWallet(
+      @PathVariable Long id, @Valid @RequestBody WalletUpdateDto walletUpdateDto) {
+    WalletDto updateWallet = walletService.update(id, walletUpdateDto);
     return updateWallet == null
         ? ResponseEntity.notFound().build()
         : ResponseEntity.ok(updateWallet);
@@ -79,16 +80,16 @@ public class WalletController {
   /**
    * Creation d'un wallet en meme temps que la creation d'un {@code User}.
    *
-   * @param wallet -> Body pour la création
+   * @param walletCreateDto -> Body pour la création
    * @return -> STATUS 201
    */
   @PostMapping()
   @Operation(
       summary = "Create a new wallet link by an user",
       description = "Role Admin require or user who create a new account.")
-  public ResponseEntity<WalletCreateDto> createWallet(
-      @Valid @RequestBody Wallet wallet) {
-    WalletCreateDto savedWallet = walletService.create(wallet);
+  public ResponseEntity<WalletDto> createWallet(
+      @Valid @RequestBody WalletCreateDto walletCreateDto) {
+    WalletDto savedWallet = walletService.create(walletCreateDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(savedWallet);
   }
 
