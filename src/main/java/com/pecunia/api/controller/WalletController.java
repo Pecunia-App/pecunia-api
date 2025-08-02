@@ -2,8 +2,8 @@ package com.pecunia.api.controller;
 
 import com.pecunia.api.dto.wallet.WalletCreateDto;
 import com.pecunia.api.dto.wallet.WalletDto;
-import com.pecunia.api.dto.wallet.WalletUpdateDto;
-import com.pecunia.api.service.wallet.WalletService;
+import com.pecunia.api.model.Wallet;
+import com.pecunia.api.service.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,8 +70,8 @@ public class WalletController {
       summary = "Update a specific Wallet by Id",
       description = "Role Admin require or login with correct user id.")
   public ResponseEntity<WalletDto> updateWallet(
-      @PathVariable Long id, @Valid @RequestBody WalletUpdateDto walletUpdateDto) {
-    WalletDto updateWallet = walletService.update(id, walletUpdateDto);
+      @PathVariable Long id, @Valid @RequestBody Wallet wallet) {
+    WalletDto updateWallet = walletService.update(id, wallet);
     return updateWallet == null
         ? ResponseEntity.notFound().build()
         : ResponseEntity.ok(updateWallet);

@@ -29,7 +29,7 @@ public class Wallet {
   /** ISO 4217 currency code (e.g., "EUR", "USD") for the wallet's balance. */
   private String currency;
 
-  @OneToOne(mappedBy = "wallet")
+  @OneToOne(mappedBy = "wallet", optional = false)
   private User user;
 
   /**
