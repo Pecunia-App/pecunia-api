@@ -18,9 +18,9 @@ public class AuthenticationService {
   }
 
   public String authenticate(String email, String password) {
-    Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(email, password)
-    );
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(email, password));
 
     return jwtService.generateToken((UserDetails) authentication.getPrincipal());
   }

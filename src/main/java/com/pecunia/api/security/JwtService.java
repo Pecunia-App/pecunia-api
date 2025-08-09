@@ -2,13 +2,12 @@ package com.pecunia.api.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.Jwts;
-
-import java.util.Date;
 
 @Service
 public class JwtService {
@@ -21,21 +20,17 @@ public class JwtService {
   public String generateToken(UserDetails userDetails) {
 
     return Jwts.builder()
-            .setSubject(userDetails.getUsername())
-            .claim("roles", userDetails.getAuthorities())
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+        .setSubject(userDetails.getUsername())
+        .claim("roles", userDetails.getAuthorities())
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+        .signWith(SignatureAlgorithm.HS256, secretKey)
+        .compact();
   }
 
   public Claims extractClaims(String token) {
-    return Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(token)
-            .getBody();
+    return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
   }
-
 
   public boolean validateJwtToken(String token) {
 

@@ -23,42 +23,42 @@ public class UserDTO {
   private String email;
 
   public Long getId() {
-      return id;
+    return id;
   }
 
   public void setId(Long id) {
-      this.id = id;
+    this.id = id;
   }
 
   public String getFirstname() {
-      return firstname;
+    return firstname;
   }
 
   public void setFirstname(String firstname) {
-      this.firstname = firstname;
+    this.firstname = firstname;
   }
 
   public String getLastname() {
-      return lastname;
+    return lastname;
   }
 
   public void setLastname(String lastname) {
-      this.lastname = lastname;
+    this.lastname = lastname;
   }
 
   public String getProfilePicture() {
-      return profilePicture;
+    return profilePicture;
   }
 
   public void setProfilePicture(String profilePicture) {
-      this.profilePicture = profilePicture;
+    this.profilePicture = profilePicture;
   }
 
   public String getEmail() {
-      return email;
+    return email;
   }
 
   public void setEmail(String email) {
-      this.email = email;
+    this.email = email;
   }
 }

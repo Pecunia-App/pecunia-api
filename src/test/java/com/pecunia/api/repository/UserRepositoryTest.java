@@ -1,17 +1,17 @@
 package com.pecunia.api.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.pecunia.api.model.User;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class UserRepositoryTest {
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Test
   void testFindAllUsers() {
@@ -43,5 +43,4 @@ class UserRepositoryTest {
     assertThat(users.get(1).getEmail()).isEqualTo(user2.getEmail());
     assertThat(users.get(1).getPassword()).isEqualTo(user2.getPassword());
   }
-
 }

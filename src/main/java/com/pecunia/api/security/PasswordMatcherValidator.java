@@ -7,8 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 public class PasswordMatcherValidator implements ConstraintValidator<PasswordMatches, Object> {
 
   @Override
-  public void initialize(PasswordMatches constraintAnnotation) {
-  }
+  public void initialize(PasswordMatches constraintAnnotation) {}
 
   @Override
   public boolean isValid(Object obj, ConstraintValidatorContext context) {
@@ -21,9 +20,10 @@ public class PasswordMatcherValidator implements ConstraintValidator<PasswordMat
 
       if (!valid) {
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate("Les mots de passe ne correspondent pas.")
-          .addPropertyNode("confirmPassword")
-          .addConstraintViolation();
+        context
+            .buildConstraintViolationWithTemplate("Les mots de passe ne correspondent pas.")
+            .addPropertyNode("confirmPassword")
+            .addConstraintViolation();
       }
       return valid;
     }
