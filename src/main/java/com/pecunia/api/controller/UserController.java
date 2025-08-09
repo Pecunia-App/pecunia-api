@@ -6,11 +6,10 @@ import com.pecunia.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Tag(name = "User controller", description = "Handle READ UPDATE and DELETE users")
@@ -32,7 +31,9 @@ public class UserController {
   }
 
   @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
-  @Operation(summary = "Get a specific user by id", description = "Role admin require or login with this user id.")
+  @Operation(
+      summary = "Get a specific user by id",
+      description = "Role admin require or login with this user id.")
   @GetMapping("/{id}")
   public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
     UserDTO user = userService.getUserById(id);
@@ -56,17 +57,24 @@ public class UserController {
   }
 
   @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
-  @Operation(summary = "Update a specific user by id", description = "Role admin require or login with this user id.")
+  @Operation(
+      summary = "Update a specific user by id",
+      description = "Role admin require or login with this user id.")
   @PutMapping("/{id}")
-  public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userDetails) {
+  public ResponseEntity<UserDTO> updateUser(
+      @PathVariable Long id, @Valid @RequestBody UserUpdateDTO userDetails) {
     UserDTO updatedUser = userService.updateUser(id, userDetails);
     return updatedUser == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(updatedUser);
   }
 
   @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
-  @Operation(summary = "delete a specific user by id", description = "role admin require or login with this user id")
+  @Operation(
+      summary = "delete a specific user by id",
+      description = "role admin require or login with this user id")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-    return userService.deleteUserById(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    return userService.deleteUserById(id)
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.notFound().build();
   }
 }

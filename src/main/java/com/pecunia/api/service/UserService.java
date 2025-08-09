@@ -5,12 +5,11 @@ import com.pecunia.api.dto.UserUpdateDTO;
 import com.pecunia.api.mapper.UserMapper;
 import com.pecunia.api.model.User;
 import com.pecunia.api.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -20,16 +19,14 @@ public class UserService {
   private final UserMapper userMapper;
 
   public UserService(
-          UserRepository userRepository,
-          PasswordEncoder passwordEncoder,
-          UserMapper userMapper
-  ) {
+      UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.userMapper = userMapper;
   }
 
-  public User registerUser(String firstname, String lastname, String email, String password, Set<String> roles) {
+  public User registerUser(
+      String firstname, String lastname, String email, String password, Set<String> roles) {
     if (userRepository.existsByEmail(email)) {
       throw new RuntimeException("Cet email est déjà utilisé");
     }
@@ -46,8 +43,8 @@ public class UserService {
 
   public List<UserDTO> getAllUsers() {
     return userRepository.findAll().stream()
-            .map(userMapper::convertToDTO)
-            .collect(Collectors.toList());
+        .map(userMapper::convertToDTO)
+        .collect(Collectors.toList());
   }
 
   public UserDTO getUserById(Long id) {
@@ -57,14 +54,14 @@ public class UserService {
 
   public List<UserDTO> getUserByFirstname(String searchTerms) {
     return userRepository.findByFirstname(searchTerms).stream()
-            .map(userMapper::convertToDTO)
-            .collect(Collectors.toList());
+        .map(userMapper::convertToDTO)
+        .collect(Collectors.toList());
   }
 
   public List<UserDTO> getUserByLastname(String searchTerms) {
     return userRepository.findByLastname(searchTerms).stream()
-            .map(userMapper::convertToDTO)
-            .collect(Collectors.toList());
+        .map(userMapper::convertToDTO)
+        .collect(Collectors.toList());
   }
 
   public UserDTO updateUser(Long id, UserUpdateDTO userDetails) {
