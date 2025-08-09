@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public UserDTO convertToDTO(User user) {
+  public UserDTO convertToDTO(User user) {
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setFirstname(user.getFirstname());
-        userDTO.setLastname(user.getLastname());
-        userDTO.setProfilePicture(user.getProfilePicture());
-        userDTO.setEmail(user.getEmail());
+    UserDTO userDTO = new UserDTO();
+    userDTO.setId(user.getId());
+    userDTO.setFirstname(user.getFirstname());
+    userDTO.setLastname(user.getLastname());
+    userDTO.setProfilePicture(user.getProfilePicture());
+    userDTO.setEmail(user.getEmail());
 
-        return userDTO;
-    }
+    return userDTO;
+  }
 }

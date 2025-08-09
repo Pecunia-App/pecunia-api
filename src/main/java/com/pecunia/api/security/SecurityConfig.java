@@ -1,8 +1,7 @@
 package com.pecunia.api.security;
 
-import java.util.List;
-
 import com.pecunia.api.service.CustomUserDetailsService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +32,9 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final CustomUserDetailsService customUserDetailsService;
 
-  public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService customUserDetailsService) {
+  public SecurityConfig(
+      JwtAuthenticationFilter jwtAuthenticationFilter,
+      CustomUserDetailsService customUserDetailsService) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.customUserDetailsService = customUserDetailsService;
   }
@@ -43,40 +44,51 @@ public class SecurityConfig {
 
   /**
    * Security configuration.
-   * 
+   *
    * @return http
    * @throws Exception when security concern exists.
    */
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(request -> {
-      CorsConfiguration config = new CorsConfiguration();
-      config.setAllowedOrigins(List.of(allowedOrigin));
-      config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-      config.setAllowedHeaders(List.of("*"));
-      config.setAllowCredentials(true);
-      return config;
-    }))
-    .authorizeHttpRequests(auth -> auth
-      .requestMatchers("/auth/**").permitAll()
-      .requestMatchers("/auth/logout").permitAll()
-      .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/pecunia-docs/**").permitAll()
-      .anyRequest().authenticated()
-    )
-    .userDetailsService(customUserDetailsService)
-    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.csrf(AbstractHttpConfigurer::disable)
+        .cors(
+            cors ->
+                cors.configurationSource(
+                    request -> {
+                      CorsConfiguration config = new CorsConfiguration();
+                      config.setAllowedOrigins(List.of(allowedOrigin));
+                      config.setAllowedMethods(
+                          List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                      config.setAllowedHeaders(List.of("*"));
+                      config.setAllowCredentials(true);
+                      return config;
+                    }))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/auth/**")
+                    .permitAll()
+                    .requestMatchers("/auth/logout")
+                    .permitAll()
+                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/pecunia-docs/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .userDetailsService(customUserDetailsService)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return http.build();
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+  public AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-    }
+    return new BCryptPasswordEncoder();
+  }
 }

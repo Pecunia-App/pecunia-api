@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ApiApplication {
 
   /**
-   * <p>main.</p>
+   * main.
    *
    * @param args an array of {@link java.lang.String} objects
    */
