@@ -24,7 +24,7 @@ public class Wallet {
   @Column(name = "amount_balance")
   private Money amountBalance;
 
-  @OneToOne(mappedBy = "wallet", optional = false, fetch = FetchType.EAGER)
+  @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
