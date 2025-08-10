@@ -1,3 +1,21 @@
+## 0.3.0 (2025-08-10)
+
+### Feat
+
+- **user-DTOs**: add annotations on dtos classes. Improve regex on registration (no space and specifics caracters)
+- **user-and-auth-controllers**: add tags on classes and methods to describe requests
+- **Security-configuration**: upgrade the openapi version in dependencies. Delete useless environment variables and update docs_path. Allow requests on swagger in security config class
+
+### Fix
+
+- **UserRegistrationDTO**: Put min and max size assertions on first and lastname. Improve the regex on those fields with letters and no numbers
+- **env**: modify .env-example to configure application.properties to dev
+- **ci**: modify trigger workflows for GA
+
+### Refactor
+
+- **ci**: fix format workflows
+
 ## 0.2.0 (2025-07-11)
 
 ### Feat
