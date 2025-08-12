@@ -1,6 +1,8 @@
 package com.pecunia.api.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,10 +23,11 @@ public class Wallet {
 
   private String name;
 
+  @Convert(converter = MoneyConverter.class)
   @Column(name = "amount_balance")
   private Money amountBalance;
 
-  @OneToOne(fetch = FetchType.EAGER)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 

@@ -6,9 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.pecunia.api.dto.wallet.WalletDto;
+import com.pecunia.api.model.Money;
 import com.pecunia.api.security.JwtAuthenticationFilter;
 import com.pecunia.api.service.WalletService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Currency;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +42,14 @@ class WalletControllerTest {
 
     WalletDto dto1 = new WalletDto();
     dto1.setName("Wallet de Jane");
-    dto1.setAmount(new BigDecimal("1000"));
-    dto1.setCurrency("EUR");
+    dto1.setAmount(
+        new Money(new BigDecimal("1200.54"), Currency.getInstance("EUR"), RoundingMode.HALF_EVEN));
 
     WalletDto dto2 = new WalletDto();
     dto2.setName("Wallet de John");
-    dto2.setAmount(new BigDecimal("25"));
-    dto2.setCurrency("USD");
+
+    dto2.setAmount(
+        new Money(new BigDecimal("-50.4"), Currency.getInstance("EUR"), RoundingMode.HALF_EVEN));
     List<WalletDto> wallets = List.of(dto1, dto2);
     when(walletService.getAllWallets()).thenReturn(wallets);
 
