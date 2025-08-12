@@ -1,12 +1,14 @@
 package com.pecunia.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pecunia.api.exception.CannotAddTwoCurrenciesException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
 
-/** Value Object Money. C'est une implémentaton du Money Pattern de Martin Fowler. */
+/** Value Object Money. C'est une implémentaton du Money Pattern de Martin Fowler */
 public class Money implements Comparable<Money> {
   private static final int[] cents = new int[] {1, 10, 100, 1000};
 
@@ -20,6 +22,16 @@ public class Money implements Comparable<Money> {
     return new Money(amount, Currency.getInstance("EUR"));
   }
 
+  /**
+   * le dollar americain va être utiliser souvent, un helper constructeur va être utile ici.
+   *
+   * @param amount un montant
+   * @return instance de Money qui va construire le montant et le code du pays au format ISO4217
+   */
+  public static Money dollars(final double amount) {
+    return new Money(amount, Currency.getInstance("USD"));
+  }
+
   private long amount;
 
   private Currency currency;
@@ -28,6 +40,13 @@ public class Money implements Comparable<Money> {
 
   public Money(final double amount, final Currency currency) {
     this.currency = Objects.requireNonNull(currency);
+    this.amount = Math.round(amount * centFactor());
+  }
+
+  @JsonCreator
+  public Money(
+      @JsonProperty("amount") double amount, @JsonProperty("currency") String currencyCode) {
+    this.currency = Currency.getInstance(currencyCode);
     this.amount = Math.round(amount * centFactor());
   }
 
@@ -42,10 +61,12 @@ public class Money implements Comparable<Money> {
         amount.multiply(BigDecimal.valueOf(centFactor())).setScale(0, roundingMode).longValue();
   }
 
+  @JsonProperty("amount")
   public BigDecimal amount() {
     return BigDecimal.valueOf(amount, currency.getDefaultFractionDigits());
   }
 
+  @JsonProperty("currency")
   public Currency currency() {
     return currency;
   }
