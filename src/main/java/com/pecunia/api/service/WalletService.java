@@ -2,6 +2,7 @@ package com.pecunia.api.service;
 
 import com.pecunia.api.dto.wallet.WalletCreateDto;
 import com.pecunia.api.dto.wallet.WalletDto;
+import com.pecunia.api.dto.wallet.WalletUpdateDto;
 import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.mapper.WalletMapper;
 import com.pecunia.api.model.Wallet;
@@ -52,13 +53,12 @@ public class WalletService {
   /**
    * Create a Wallet.
    *
-   * @param walletCreateDto wallet Create Dto
+   * @param wallet wallet
    * @return new wallet
    */
-  public WalletDto create(WalletCreateDto walletCreateDto) {
-    Wallet wallet = walletMapper.convertToEntity(walletCreateDto);
+  public WalletCreateDto create(Wallet wallet) {
     Wallet savedWallet = walletRepository.save(wallet);
-    return walletMapper.convertToDto(savedWallet);
+    return walletMapper.convertToCreateDto(savedWallet);
   }
 
   /**
@@ -68,16 +68,15 @@ public class WalletService {
    * @param walletDetails wallet entity
    * @return updated wallet
    */
-  public WalletDto update(Long id, Wallet walletDetails) {
+  public WalletUpdateDto update(Long id, Wallet walletDetails) {
     Wallet wallet = getWalletByIdOrThrow(id);
     if (wallet == null) {
       return null;
     }
     wallet.setName(walletDetails.getName());
-    wallet.setAmount(walletDetails.getAmount());
-    wallet.setCurrency(walletDetails.getCurrency());
+    wallet.setAmountBalance(walletDetails.getAmountBalance());
     Wallet updateWallet = walletRepository.save(wallet);
-    return walletMapper.convertToDto(updateWallet);
+    return walletMapper.convertToUpdateDto(updateWallet);
   }
 
   /**

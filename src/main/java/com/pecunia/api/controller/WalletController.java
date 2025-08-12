@@ -2,6 +2,7 @@ package com.pecunia.api.controller;
 
 import com.pecunia.api.dto.wallet.WalletCreateDto;
 import com.pecunia.api.dto.wallet.WalletDto;
+import com.pecunia.api.dto.wallet.WalletUpdateDto;
 import com.pecunia.api.model.Wallet;
 import com.pecunia.api.service.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,11 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/wallets")
 public class WalletController {
 
-  private final WalletService walletService;
-
-  public WalletController(WalletService walletService) {
-    this.walletService = walletService;
-  }
+  @Autowired private WalletService walletService;
 
   /**
    * Methode renvoyant tous les wallets disponbles, utiles aux admins.
@@ -61,17 +59,17 @@ public class WalletController {
   /**
    * Modification d'un wallet.
    *
-   * @param id -> Identifiant d'un wallet
-   * @param walletUpdateDto -> Body à update
+   * @param id Identifiant d'un wallet
+   * @param wallet Body à update
    * @return 200 OU 404
    */
   @PutMapping("/{id}")
   @Operation(
       summary = "Update a specific Wallet by Id",
       description = "Role Admin require or login with correct user id.")
-  public ResponseEntity<WalletDto> updateWallet(
+  public ResponseEntity<WalletUpdateDto> updateWallet(
       @PathVariable Long id, @Valid @RequestBody Wallet wallet) {
-    WalletDto updateWallet = walletService.update(id, wallet);
+    WalletUpdateDto updateWallet = walletService.update(id, wallet);
     return updateWallet == null
         ? ResponseEntity.notFound().build()
         : ResponseEntity.ok(updateWallet);
@@ -81,22 +79,21 @@ public class WalletController {
    * Creation d'un wallet en meme temps que la creation d'un {@code User}.
    *
    * @param walletCreateDto -> Body pour la création
-   * @return -> STATUS 201
+   * @returnSTATUS 201
    */
   @PostMapping()
   @Operation(
       summary = "Create a new wallet link by an user",
       description = "Role Admin require or user who create a new account.")
-  public ResponseEntity<WalletDto> createWallet(
-      @Valid @RequestBody WalletCreateDto walletCreateDto) {
-    WalletDto savedWallet = walletService.create(walletCreateDto);
+  public ResponseEntity<WalletCreateDto> createWallet(@Valid @RequestBody Wallet wallet) {
+    WalletCreateDto savedWallet = walletService.create(walletCreateDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(savedWallet);
   }
 
   /**
    * Request to delete a wallet and his transactions.
    *
-   * @param id -> d'un wallet à supprimer
+   * @param id d'un wallet à supprimer
    * @return Soit une 204 ou une 404
    */
   @DeleteMapping("/{id}")

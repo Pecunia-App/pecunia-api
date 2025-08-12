@@ -1,10 +1,9 @@
 package com.pecunia.api.dto.wallet;
 
-import jakarta.validation.constraints.DecimalMax;
+import com.pecunia.api.model.Money;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.math.BigDecimal;
 
 /** WalletCreateDto. */
 public class WalletCreateDto {
@@ -13,16 +12,9 @@ public class WalletCreateDto {
   private String name;
 
   @NotNull(message = "Le montant de la balance initial ne doit pas être vide.")
-  @DecimalMax("2")
-  private BigDecimal amount;
+  private Money amount;
 
-  @NotBlank(message = "La devise ne doit pas être vide.")
-  @Size(
-      min = 3,
-      max = 3,
-      message = "La devise doit respecter la norme ISO 4217 (ex: USD, EUR, JPY).")
-  private String currency;
-
+  @NotNull(message = "Un Wallet est toujours lié à un utilisateur.")
   private Long userId;
 
   public String getName() {
@@ -33,20 +25,12 @@ public class WalletCreateDto {
     this.name = name;
   }
 
-  public BigDecimal getAmount() {
+  public Money getAmount() {
     return amount;
   }
 
-  public void setAmount(BigDecimal amount) {
+  public void setAmount(Money amount) {
     this.amount = amount;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public void setCurrency(String currency) {
-    this.currency = currency;
   }
 
   public Long getUserId() {
