@@ -1,13 +1,12 @@
 package com.pecunia.api.dto.wallet;
 
-import java.math.BigDecimal;
+import com.pecunia.api.model.Money;
 
 /** WalletDto. */
 public class WalletDto {
-  public Long id;
-  public String name;
-  public BigDecimal amount;
-  public String currency;
+  private Long id;
+  private String name;
+  private Money amount;
 
   public Long getId() {
     return id;
@@ -25,19 +24,11 @@ public class WalletDto {
     this.name = name;
   }
 
-  public BigDecimal getAmount() {
+  public Money getAmount() {
     return amount;
   }
 
-  public void setAmount(BigDecimal amount) {
+  public void setAmount(Money amount) {
     this.amount = amount;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public void setCurrency(String currency) {
-    this.currency = currency;
   }
 }

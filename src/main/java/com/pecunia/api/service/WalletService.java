@@ -2,9 +2,12 @@ package com.pecunia.api.service;
 
 import com.pecunia.api.dto.wallet.WalletCreateDto;
 import com.pecunia.api.dto.wallet.WalletDto;
+import com.pecunia.api.dto.wallet.WalletUpdateDto;
 import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.mapper.WalletMapper;
+import com.pecunia.api.model.User;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.UserRepository;
 import com.pecunia.api.repository.WalletRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +19,7 @@ public class WalletService {
 
   private final WalletRepository walletRepository;
   private final WalletMapper walletMapper;
+  private final UserRepository userRepository;
 
   /**
    * Constructor of walletService class.
@@ -23,9 +27,11 @@ public class WalletService {
    * @param walletRepository wallet repository
    * @param walletMapper wallet mapper
    */
-  public WalletService(WalletRepository walletRepository, WalletMapper walletMapper) {
+  public WalletService(
+      WalletRepository walletRepository, WalletMapper walletMapper, UserRepository userRepository) {
     this.walletRepository = walletRepository;
     this.walletMapper = walletMapper;
+    this.userRepository = userRepository;
   }
 
   /**
@@ -52,32 +58,44 @@ public class WalletService {
   /**
    * Create a Wallet.
    *
-   * @param walletCreateDto wallet Create Dto
+   * @param walletCreateDto wallet creation Dto
    * @return new wallet
    */
-  public WalletDto create(WalletCreateDto walletCreateDto) {
-    Wallet wallet = walletMapper.convertToEntity(walletCreateDto);
+  public WalletCreateDto create(WalletCreateDto walletCreateDto) {
+    if (walletCreateDto.getUserId() == null) {
+      throw new IllegalArgumentException("UserId cannot be null");
+    }
+    User user =
+        userRepository
+            .findById(walletCreateDto.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    Wallet wallet = walletMapper.convertCreateDtoToEntity(walletCreateDto, user);
     Wallet savedWallet = walletRepository.save(wallet);
-    return walletMapper.convertToDto(savedWallet);
+    return walletMapper.convertToCreateDto(savedWallet);
   }
 
   /**
    * Update a wallet.
    *
    * @param id wallet id
-   * @param walletDetails wallet entity
+   * @param walletUpdateDto wallet entity
    * @return updated wallet
    */
-  public WalletDto update(Long id, Wallet walletDetails) {
+  public WalletUpdateDto update(Long id, WalletUpdateDto walletUpdateDto) {
     Wallet wallet = getWalletByIdOrThrow(id);
     if (wallet == null) {
       return null;
     }
-    wallet.setName(walletDetails.getName());
-    wallet.setAmount(walletDetails.getAmount());
-    wallet.setCurrency(walletDetails.getCurrency());
+    if (walletUpdateDto.getName() != null) {
+      wallet.setName(walletUpdateDto.getName());
+    }
+    if (wallet.getAmountBalance() != null) {
+      wallet.setAmountBalance(walletUpdateDto.getAmount());
+    }
+    wallet.setName(walletUpdateDto.getName());
+    wallet.setAmountBalance(walletUpdateDto.getAmount());
     Wallet updateWallet = walletRepository.save(wallet);
-    return walletMapper.convertToDto(updateWallet);
+    return walletMapper.convertToUpdateDto(updateWallet);
   }
 
   /**
@@ -90,6 +108,10 @@ public class WalletService {
     Wallet wallet = getWalletByIdOrThrow(id);
     if (wallet == null) {
       return false;
+    }
+    if (wallet.getUser() != null) {
+      wallet.getUser().setWallet(null);
+      wallet.setUser(null);
     }
     walletRepository.delete(wallet);
     return true;
