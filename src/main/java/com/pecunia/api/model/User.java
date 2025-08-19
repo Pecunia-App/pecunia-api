@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 /** Entity User. */
 @Entity
 @Table(name = "`user`")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
