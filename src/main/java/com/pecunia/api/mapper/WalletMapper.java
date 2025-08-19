@@ -7,6 +7,7 @@ import com.pecunia.api.model.User;
 import com.pecunia.api.model.Wallet;
 import org.springframework.stereotype.Component;
 
+/** WalletMapper. */
 @Component
 public class WalletMapper {
 

@@ -9,13 +9,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 /** Wallet. */
 @Entity
 @Table(name = "wallet")
-public class Wallet {
+public class Wallet extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +33,17 @@ public class Wallet {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
+
+  @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<Transaction> transactions = new HashSet<>();
+
+  public Set<Transaction> getTransactions() {
+    return transactions;
+  }
+
+  public void setTransactions(Set<Transaction> transactions) {
+    this.transactions = transactions;
+  }
 
   public Long getId() {
     return id;
