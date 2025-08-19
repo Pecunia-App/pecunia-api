@@ -1,16 +1,24 @@
 package com.pecunia.api.service;
 
+import com.pecunia.api.dto.transaction.TransactionDto;
 import com.pecunia.api.dto.wallet.WalletCreateDto;
 import com.pecunia.api.dto.wallet.WalletDto;
 import com.pecunia.api.dto.wallet.WalletUpdateDto;
 import com.pecunia.api.exception.ResourceNotFoundException;
+import com.pecunia.api.mapper.TransactionMapper;
 import com.pecunia.api.mapper.WalletMapper;
+import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.User;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.TransactionRepository;
 import com.pecunia.api.repository.UserRepository;
 import com.pecunia.api.repository.WalletRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /** WalletService. */
@@ -20,6 +28,8 @@ public class WalletService {
   private final WalletRepository walletRepository;
   private final WalletMapper walletMapper;
   private final UserRepository userRepository;
+  private final TransactionRepository transactionRepository;
+  private final TransactionMapper transactionMapper;
 
   /**
    * Constructor of walletService class.
@@ -28,10 +38,16 @@ public class WalletService {
    * @param walletMapper wallet mapper
    */
   public WalletService(
-      WalletRepository walletRepository, WalletMapper walletMapper, UserRepository userRepository) {
+      WalletRepository walletRepository,
+      WalletMapper walletMapper,
+      UserRepository userRepository,
+      TransactionRepository transactionRepository,
+      TransactionMapper transactionMapper) {
     this.walletRepository = walletRepository;
     this.walletMapper = walletMapper;
     this.userRepository = userRepository;
+    this.transactionRepository = transactionRepository;
+    this.transactionMapper = transactionMapper;
   }
 
   /**
@@ -42,6 +58,23 @@ public class WalletService {
   public List<WalletDto> getAllWallets() {
     List<Wallet> wallets = walletRepository.findAll();
     return wallets.stream().map(walletMapper::convertToDto).collect(Collectors.toList());
+  }
+
+  /**
+   * Pagination of all transactions.
+   *
+   * @param walletId wallet id
+   * @param pageable ex: page=0&size=20&sort=createdAt,desc
+   * @return page transactionDto
+   */
+  public Page<TransactionDto> getTransactionsWallet(
+      Long walletId, @ParameterObject Pageable pageable) {
+    if (!walletRepository.existsById(walletId)) {
+      throw new EntityNotFoundException("wallet non trouvé avec l'ID: " + walletId);
+    }
+    Page<Transaction> transactions = transactionRepository.findByWalletId(walletId, pageable);
+
+    return transactions.map(transactionMapper::convertToDto);
   }
 
   /**
@@ -115,6 +148,18 @@ public class WalletService {
     }
     walletRepository.delete(wallet);
     return true;
+  }
+
+  /**
+   * Method securities.
+   *
+   * @param walletId wallet id
+   * @param userId wallet's user id
+   * @return boolean
+   */
+  public boolean isWalletOwnedByUser(Long walletId, Long userId) {
+    Wallet wallet = walletRepository.findById(walletId).orElse(null);
+    return wallet != null && wallet.getUser().getId().equals(userId);
   }
 
   private Wallet getWalletByIdOrThrow(Long id) {
