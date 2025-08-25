@@ -52,6 +52,7 @@ public class TransactionMapper {
     transactionUpdateDto.setAmount(transaction.getAmount());
     transactionUpdateDto.setNote(transaction.getNote());
     transactionUpdateDto.setType(transaction.getType());
+    transactionUpdateDto.setCreatedAt(transaction.getCreatedAt());
 
     return transactionUpdateDto;
   }
