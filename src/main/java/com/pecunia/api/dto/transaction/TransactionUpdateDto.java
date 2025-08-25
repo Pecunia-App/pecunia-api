@@ -1,19 +1,30 @@
 package com.pecunia.api.dto.transaction;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.TransactionType;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 /** TransactionUpdateDto. */
 public class TransactionUpdateDto {
-  @NotNull(message = "Le montant ne doit pas être vide.")
   private Money amount;
 
   private TransactionType type;
 
   @Size(min = 0, max = 20, message = "La note peut contenir un maximum de 20 caractères.")
   private String note;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  private LocalDateTime createdAt;
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
 
   public Money getAmount() {
     return amount;

@@ -136,11 +136,14 @@ public class TransactionService {
     if (transactionUpdateDto.getAmount() != null) {
       transaction.setAmount(transactionUpdateDto.getAmount());
     }
-    if (transaction.getNote() != null) {
+    if (transactionUpdateDto.getNote() != null) {
       transaction.setNote(transactionUpdateDto.getNote());
     }
-    if (transaction.getType() != null) {
+    if (transactionUpdateDto.getType() != null) {
       transaction.setType(transactionUpdateDto.getType());
+    }
+    if (transactionUpdateDto.getCreatedAt() != null) {
+      transaction.setCreatedAt(transactionUpdateDto.getCreatedAt());
     }
     transaction.setUpdatedAt(LocalDateTime.now());
     Wallet wallet =
