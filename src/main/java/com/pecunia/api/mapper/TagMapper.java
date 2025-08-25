@@ -1,5 +1,6 @@
 package com.pecunia.api.mapper;
 
+import com.pecunia.api.dto.tag.TagCreateDto;
 import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.model.Tag;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,18 @@ public class TagMapper {
     dto.setUpdatedAt(tag.getUpdatedAt());
     dto.setCreatedAt(tag.getCreatedAt());
 
+    return dto;
+  }
+
+  public Tag convertCreateDtoToEntity(TagCreateDto dto) {
+    Tag tag = new Tag();
+    tag.setTagName(dto.getTagName());
+    return tag;
+  }
+
+  public TagCreateDto convertToCreateDto(Tag tag) {
+    TagCreateDto dto = new TagCreateDto();
+    dto.setTagName(tag.getTagName());
     return dto;
   }
 }

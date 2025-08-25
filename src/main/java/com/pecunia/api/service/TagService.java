@@ -1,10 +1,12 @@
 package com.pecunia.api.service;
 
+import com.pecunia.api.dto.tag.TagCreateDto;
 import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.mapper.TagMapper;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.repository.TagRepository;
+import java.time.LocalDateTime;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +58,43 @@ public class TagService {
         tagRepository.findByTagNameContainingIgnoreCaseAndTransactionsWalletUserId(
             searchTerm, userId, pageable);
     return tags.map(tagMapper::convertToDto);
+  }
+
+  /**
+   * Create a tag.
+   *
+   * @param tagCreateDto
+   * @return
+   */
+  public TagCreateDto create(TagCreateDto tagCreateDto) {
+    validateTagCreation(tagCreateDto);
+    Tag tag = tagMapper.convertCreateDtoToEntity(tagCreateDto);
+    Tag savedTag = tagRepository.save(tag);
+    return tagMapper.convertToCreateDto(savedTag);
+  }
+
+  /**
+   * Update a tag.
+   *
+   * @param id
+   * @param tagUpdateDto
+   * @return
+   */
+  public TagCreateDto udpate(Long id, TagCreateDto tagUpdateDto) {
+    Tag tag = getTagByIdOrThrow(id);
+
+    if (tagUpdateDto.getTagName() != null) {
+      tag.setTagName(tagUpdateDto.getTagName());
+    }
+    tag.setUpdatedAt(LocalDateTime.now());
+    Tag updatedTag = tagRepository.save(tag);
+    return tagMapper.convertToCreateDto(updatedTag);
+  }
+
+  private static void validateTagCreation(TagCreateDto tagCreateDto) {
+    if (tagCreateDto.getTagName() == null) {
+      throw new IllegalArgumentException("Tag name cannot be null.");
+    }
   }
 
   /**
