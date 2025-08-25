@@ -20,7 +20,7 @@ import java.io.IOException;
 @Service
 public class ProfilePictureService {
   private static final int TARGET_SIZE = 32;
-  private static final long MAX_FILE_SIZE = 50 * 1024; // 50KB suffisant pour 32x32
+  private static final long MAX_FILE_SIZE = 50 * 1024;
 
   private final ProfilePictureRepository profilePictureRepository;
   private final UserRepository userRepository;
