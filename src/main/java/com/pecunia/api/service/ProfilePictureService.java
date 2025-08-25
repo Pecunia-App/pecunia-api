@@ -6,16 +6,14 @@ import com.pecunia.api.model.ProfilePicture;
 import com.pecunia.api.model.User;
 import com.pecunia.api.repository.ProfilePictureRepository;
 import com.pecunia.api.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
+import javax.imageio.ImageIO;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProfilePictureService {
@@ -26,9 +24,10 @@ public class ProfilePictureService {
   private final UserRepository userRepository;
   private final ProfilePictureMapper profilePictureMapper;
 
-  public ProfilePictureService(ProfilePictureRepository profilePictureRepository,
-                               UserRepository userRepository,
-                               ProfilePictureMapper profilePictureMapper) {
+  public ProfilePictureService(
+      ProfilePictureRepository profilePictureRepository,
+      UserRepository userRepository,
+      ProfilePictureMapper profilePictureMapper) {
     this.profilePictureRepository = profilePictureRepository;
     this.userRepository = userRepository;
     this.profilePictureMapper = profilePictureMapper;
@@ -38,10 +37,12 @@ public class ProfilePictureService {
     BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
     // Créer une nouvelle image carrée de 32x32
-    BufferedImage resizedImage = new BufferedImage(TARGET_SIZE, TARGET_SIZE, BufferedImage.TYPE_INT_RGB);
+    BufferedImage resizedImage =
+        new BufferedImage(TARGET_SIZE, TARGET_SIZE, BufferedImage.TYPE_INT_RGB);
 
     Graphics2D g = resizedImage.createGraphics();
-    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    g.setRenderingHint(
+        RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
     // Calculer les dimensions pour un recadrage carré
     int size = Math.min(originalImage.getWidth(), originalImage.getHeight());
@@ -49,8 +50,7 @@ public class ProfilePictureService {
     int y = (originalImage.getHeight() - size) / 2;
 
     // Dessiner en 32x32
-    g.drawImage(originalImage.getSubimage(x, y, size, size),
-            0, 0, TARGET_SIZE, TARGET_SIZE, null);
+    g.drawImage(originalImage.getSubimage(x, y, size, size), 0, 0, TARGET_SIZE, TARGET_SIZE, null);
     g.dispose();
 
     // Convertir en bytes
@@ -60,11 +60,15 @@ public class ProfilePictureService {
   }
 
   public ProfilePictureDTO saveProfilePicture(Long userId, byte[] pictureData) {
-    User user = userRepository.findById(userId)
+    User user =
+        userRepository
+            .findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
     if (user.getProfilePicture() != null) {
-      throw new RuntimeException("L'utilisateur possède déjà une photo de profil. Utilisez la fonction de mise à jour à la place.");
+      throw new RuntimeException(
+          "L'utilisateur possède déjà une photo de profil. Utilisez la fonction de mise à jour à la"
+              + " place.");
     }
 
     ProfilePicture profilePicture = new ProfilePicture();
@@ -78,9 +82,10 @@ public class ProfilePictureService {
     return profilePictureMapper.convertToDTO(profilePicture);
   }
 
-
   public ProfilePictureDTO getProfilePicture(Long userId) {
-    User user = userRepository.findById(userId)
+    User user =
+        userRepository
+            .findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
     if (user.getProfilePicture() == null) {
@@ -91,7 +96,9 @@ public class ProfilePictureService {
   }
 
   public ProfilePictureDTO updateProfilePicture(Long userId, byte[] pictureData) {
-    User user = userRepository.findById(userId)
+    User user =
+        userRepository
+            .findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
     if (user.getProfilePicture() == null) {
@@ -106,7 +113,9 @@ public class ProfilePictureService {
   }
 
   public boolean deleteProfilePicture(@PathVariable Long userId) {
-    User user = userRepository.findById(userId)
+    User user =
+        userRepository
+            .findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur introuvable."));
     if (user.getProfilePicture() == null) {
       return false;

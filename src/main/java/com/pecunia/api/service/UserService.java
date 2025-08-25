@@ -74,7 +74,7 @@ public class UserService {
     user.setFirstname(userDetails.getFirstname());
     user.setLastname(userDetails.getLastname());
     user.setEmail(userDetails.getEmail());
-    user.setProfilePicture(userDetails.getProfilePicture ());
+    user.setProfilePicture(userDetails.getProfilePicture());
 
     User updatedUser = userRepository.save(user);
     return userMapper.convertToDTO(updatedUser);

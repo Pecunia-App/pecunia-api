@@ -4,7 +4,6 @@ import com.pecunia.api.dto.ProfilePictureDTO;
 import com.pecunia.api.model.ProfilePicture;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class ProfilePictureMapper {
   public ProfilePicture convertToEntity(ProfilePictureDTO profilePictureDTO) {
@@ -24,5 +23,3 @@ public class ProfilePictureMapper {
     return profilePictureDTO;
   }
 }
-  
-
