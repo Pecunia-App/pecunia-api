@@ -5,6 +5,7 @@ import com.pecunia.api.model.Money;
 import com.pecunia.api.model.TransactionType;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /** TransactionUpdateDto. */
 public class TransactionUpdateDto {
@@ -17,6 +18,8 @@ public class TransactionUpdateDto {
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime createdAt;
+
+  private Set<Long> tagsIds;
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
@@ -48,5 +51,13 @@ public class TransactionUpdateDto {
 
   public void setType(TransactionType type) {
     this.type = type;
+  }
+
+  public Set<Long> getTagsIds() {
+    return tagsIds;
+  }
+
+  public void setTagsIds(Set<Long> tagsIds) {
+    this.tagsIds = tagsIds;
   }
 }

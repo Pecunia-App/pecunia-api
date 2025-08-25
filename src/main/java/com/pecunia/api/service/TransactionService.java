@@ -7,12 +7,16 @@ import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.exception.TransactionTypeNotSupportedException;
 import com.pecunia.api.mapper.TransactionMapper;
 import com.pecunia.api.model.Money;
+import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.TagRepository;
 import com.pecunia.api.repository.TransactionRepository;
 import com.pecunia.api.repository.WalletRepository;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +28,7 @@ public class TransactionService {
   private final TransactionRepository transactionRepository;
   private final TransactionMapper transactionMapper;
   private final WalletRepository walletRepository;
+  private final TagRepository tagRepository;
 
   /**
    * Repository constructor.
@@ -33,10 +38,12 @@ public class TransactionService {
   public TransactionService(
       TransactionRepository transactionRepository,
       TransactionMapper transactionMapper,
-      WalletRepository walletRepository) {
+      WalletRepository walletRepository,
+      TagRepository tagRepository) {
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.walletRepository = walletRepository;
+    this.tagRepository = tagRepository;
   }
 
   /**
@@ -82,8 +89,16 @@ public class TransactionService {
         walletRepository
             .findById(transactionCreateDto.getWalletId())
             .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+    Set<Tag> tags = new HashSet<>();
+    if (transactionCreateDto.getTagsIds() != null) {
+      tags = new HashSet<>(tagRepository.findAllById(transactionCreateDto.getTagsIds()));
+
+      if (tags.size() != transactionCreateDto.getTagsIds().size()) {
+        throw new IllegalArgumentException("Certains tags n'existents pas.");
+      }
+    }
     Transaction transaction =
-        transactionMapper.convertCreateDtoToEntity(transactionCreateDto, wallet);
+        transactionMapper.convertCreateDtoToEntity(transactionCreateDto, wallet, tags);
     Transaction savedTransaction = transactionRepository.save(transaction);
     updateWalletBalance(wallet, transactionCreateDto.getAmount(), transactionCreateDto.getType());
     return transactionMapper.convertToCreateDto(savedTransaction);
@@ -145,6 +160,15 @@ public class TransactionService {
     if (transactionUpdateDto.getCreatedAt() != null) {
       transaction.setCreatedAt(transactionUpdateDto.getCreatedAt());
     }
+    Set<Tag> newTags = new HashSet<>();
+    if (transactionUpdateDto.getTagsIds() != null) {
+      newTags = new HashSet<>(tagRepository.findAllById(transactionUpdateDto.getTagsIds()));
+      if (newTags.size() != transactionUpdateDto.getTagsIds().size()) {
+        throw new IllegalArgumentException("Certains tags n'existent pas.");
+      }
+      transaction.setTags(newTags);
+    }
+
     transaction.setUpdatedAt(LocalDateTime.now());
     Wallet wallet =
         walletRepository

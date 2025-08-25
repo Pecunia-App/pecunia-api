@@ -1,8 +1,10 @@
 package com.pecunia.api.dto.transaction;
 
+import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.TransactionType;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /** TransactionDto. */
 public class TransactionDto {
@@ -10,6 +12,8 @@ public class TransactionDto {
   private TransactionType type;
   private String note;
   private Money amount;
+  private Set<TagDto> tags;
+
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
@@ -59,5 +63,13 @@ public class TransactionDto {
 
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public Set<TagDto> getTags() {
+    return tags;
+  }
+
+  public void setTags(Set<TagDto> tags) {
+    this.tags = tags;
   }
 }

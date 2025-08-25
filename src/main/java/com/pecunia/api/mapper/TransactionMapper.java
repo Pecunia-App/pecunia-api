@@ -1,15 +1,24 @@
 package com.pecunia.api.mapper;
 
+import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.dto.transaction.TransactionCreateDto;
 import com.pecunia.api.dto.transaction.TransactionDto;
 import com.pecunia.api.dto.transaction.TransactionUpdateDto;
+import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.Wallet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 /** TransactionMapper. */
 @Component
 public class TransactionMapper {
+  private final TagMapper tagMapper;
+
+  public TransactionMapper(TagMapper tagMapper) {
+    this.tagMapper = tagMapper;
+  }
 
   /**
    * @param transaction
@@ -23,15 +32,22 @@ public class TransactionMapper {
     dto.setType(transaction.getType());
     dto.setCreatedAt(transaction.getCreatedAt());
     dto.setUpdatedAt(transaction.getUpdatedAt());
+    if (transaction.getTags() != null) {
+      Set<TagDto> tagDtos =
+          transaction.getTags().stream().map(tagMapper::convertToDto).collect(Collectors.toSet());
+      dto.setTags(tagDtos);
+    }
 
     return dto;
   }
 
-  public Transaction convertCreateDtoToEntity(TransactionCreateDto dto, Wallet wallet) {
+  public Transaction convertCreateDtoToEntity(
+      TransactionCreateDto dto, Wallet wallet, Set<Tag> tags) {
     Transaction transaction = new Transaction();
     transaction.setAmount(dto.getAmount());
     transaction.setNote(dto.getNote());
     transaction.setType(dto.getType());
+    transaction.setTags(tags);
     transaction.setWallet(wallet);
 
     return transaction;
@@ -43,18 +59,28 @@ public class TransactionMapper {
     dto.setNote(transaction.getNote());
     dto.setType(transaction.getType());
     dto.setWalletId(transaction.getWallet().getId());
+    if (transaction.getTags() != null) {
+      Set<Long> tagsIds =
+          transaction.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
+      dto.setTagsIds(tagsIds);
+    }
 
     return dto;
   }
 
   public TransactionUpdateDto convertToUpdateDto(Transaction transaction) {
-    TransactionUpdateDto transactionUpdateDto = new TransactionUpdateDto();
-    transactionUpdateDto.setAmount(transaction.getAmount());
-    transactionUpdateDto.setNote(transaction.getNote());
-    transactionUpdateDto.setType(transaction.getType());
-    transactionUpdateDto.setCreatedAt(transaction.getCreatedAt());
+    TransactionUpdateDto dto = new TransactionUpdateDto();
+    dto.setAmount(transaction.getAmount());
+    dto.setNote(transaction.getNote());
+    dto.setType(transaction.getType());
+    dto.setCreatedAt(transaction.getCreatedAt());
+    if (transaction.getTags() != null) {
+      Set<Long> tagsIds =
+          transaction.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
+      dto.setTagsIds(tagsIds);
+    }
 
-    return transactionUpdateDto;
+    return dto;
   }
 
   public Transaction convertToEntiy(TransactionCreateDto dto) {
