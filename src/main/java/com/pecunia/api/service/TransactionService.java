@@ -40,7 +40,7 @@ public class TransactionService {
   }
 
   /**
-   * Methode renvoyant tous les wallets disponbles, utiles aux admins.
+   * Methode renvoyant toutes les transactions disponibles, utiles aux admins.
    *
    * @param pageable PageSize, pageNumber, totalElements, totalPages
    * @return pagination de transactions
