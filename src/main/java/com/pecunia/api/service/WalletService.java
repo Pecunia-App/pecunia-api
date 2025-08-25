@@ -116,17 +116,12 @@ public class WalletService {
    */
   public WalletUpdateDto update(Long id, WalletUpdateDto walletUpdateDto) {
     Wallet wallet = getWalletByIdOrThrow(id);
-    if (wallet == null) {
-      return null;
-    }
     if (walletUpdateDto.getName() != null) {
-      wallet.setName(walletUpdateDto.getName());
+      wallet.setName(walletUpdateDto.getName().trim());
     }
-    if (wallet.getAmountBalance() != null) {
+    if (walletUpdateDto.getAmount() != null) {
       wallet.setAmountBalance(walletUpdateDto.getAmount());
     }
-    wallet.setName(walletUpdateDto.getName());
-    wallet.setAmountBalance(walletUpdateDto.getAmount());
     Wallet updateWallet = walletRepository.save(wallet);
     return walletMapper.convertToUpdateDto(updateWallet);
   }

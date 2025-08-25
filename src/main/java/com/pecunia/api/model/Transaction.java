@@ -8,8 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 /** Transaction. */
 @Entity
@@ -29,6 +33,21 @@ public class Transaction extends BaseEntity {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "wallet_id", nullable = false)
   private Wallet wallet;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "transaction_tag",
+      joinColumns = @JoinColumn(name = "transaction_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private Set<Tag> tags = new HashSet<>();
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
+
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
+  }
 
   public Long getId() {
     return id;

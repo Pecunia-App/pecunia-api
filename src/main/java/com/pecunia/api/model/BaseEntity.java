@@ -10,7 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @MappedSuperclass
 public class BaseEntity {
 
-  @Column(name = "created_at", nullable = false, updatable = false)
+  @Column(name = "created_at", nullable = false, updatable = true)
   @CreationTimestamp
   private LocalDateTime createdAt;
 
