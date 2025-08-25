@@ -1,14 +1,6 @@
 package com.pecunia.api.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-/** Entity User. */
 @Entity
 @Table(name = "`user`")
 public class User extends BaseEntity implements UserDetails {
@@ -25,6 +16,14 @@ public class User extends BaseEntity implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+  }
+
+  public ProfilePicture getProfilePicture() {
+    return profilePicture;
+  }
+
+  public void setProfilePicture(ProfilePicture profilePicture) {
+    this.profilePicture = profilePicture;
   }
 
   @Override
@@ -60,11 +59,13 @@ public class User extends BaseEntity implements UserDetails {
 
   private String lastname;
 
-  private String profilePicture;
-
   private String email;
 
   private String password;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "profile_picture_id", unique = true)
+  private ProfilePicture profilePicture;
 
   @ElementCollection(fetch = FetchType.EAGER)
   private Set<String> roles = new HashSet<>();
@@ -102,14 +103,6 @@ public class User extends BaseEntity implements UserDetails {
 
   public void setLastname(String lastname) {
     this.lastname = lastname;
-  }
-
-  public String getProfilePicture() {
-    return profilePicture;
-  }
-
-  public void setProfilePicture(String profilePicture) {
-    this.profilePicture = profilePicture;
   }
 
   public String getEmail() {
