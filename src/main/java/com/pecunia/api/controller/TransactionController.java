@@ -27,7 +27,9 @@ public class TransactionController {
   private final TransactionService transactionService;
 
   /**
-   * @param transactionService
+   * Constructor transaction controller.
+   *
+   * @param transactionService {@link TransactionService}
    */
   public TransactionController(TransactionService transactionService) {
     this.transactionService = transactionService;
@@ -36,8 +38,8 @@ public class TransactionController {
   /**
    * Toutes les transactions disponibles, utiles aux admins.
    *
-   * @param pageable
-   * @return
+   * @param pageable {@link org.springframework.data.domain.PageRequest}
+   * @return page of transactionDto
    */
   @GetMapping
   @Operation(summary = "Return all transaction wih pagination", description = "Role Admin require")
@@ -49,6 +51,12 @@ public class TransactionController {
         : ResponseEntity.ok(transactions);
   }
 
+  /**
+   * Get a specific transaction by id.
+   *
+   * @param id transaction id
+   * @return one transaction
+   */
   @GetMapping("/{id}")
   @Operation(
       summary = "Get a specific Transaction by id",

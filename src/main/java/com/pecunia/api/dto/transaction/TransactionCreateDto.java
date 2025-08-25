@@ -4,6 +4,7 @@ import com.pecunia.api.model.Money;
 import com.pecunia.api.model.TransactionType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
 
 /** TransactionCreateDto. */
 public class TransactionCreateDto {
@@ -17,6 +18,8 @@ public class TransactionCreateDto {
 
   @NotNull(message = "Une transaction est toujours lié à un wallet.")
   private Long walletId;
+
+  private Set<Long> tagsIds;
 
   public Money getAmount() {
     return amount;
@@ -48,5 +51,13 @@ public class TransactionCreateDto {
 
   public void setWalletId(Long walletId) {
     this.walletId = walletId;
+  }
+
+  public Set<Long> getTagsIds() {
+    return tagsIds;
+  }
+
+  public void setTagsIds(Set<Long> tagsIds) {
+    this.tagsIds = tagsIds;
   }
 }
