@@ -73,6 +73,7 @@ public class GlobalExceptionHandler {
             });
     return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
   }
+
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   public ResponseEntity<Object> handleMaxSizeException(MaxUploadSizeExceededException ex) {
     Map<String, Object> body = new LinkedHashMap<>();

@@ -19,6 +19,14 @@ public class User extends BaseEntity implements UserDetails {
     return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
   }
 
+  public ProfilePicture getProfilePicture() {
+    return profilePicture;
+  }
+
+  public void setProfilePicture(ProfilePicture profilePicture) {
+    this.profilePicture = profilePicture;
+  }
+
   @Override
   public String getUsername() {
     return email;
