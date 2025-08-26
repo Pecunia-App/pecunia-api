@@ -2,7 +2,7 @@ package com.pecunia.api.dto;
 
 public class ProfilePictureDTO {
   private Long id;
-  private byte[] picture;
+  private String picture;
   private Long userId;
 
   public Long getId() {
@@ -13,19 +13,19 @@ public class ProfilePictureDTO {
     this.id = id;
   }
 
-  public byte[] getPicture() {
-    return picture;
-  }
-
-  public void setPicture(byte[] picture) {
-    this.picture = picture;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
   public Long getUserId() {
     return userId;
   }
 
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public void setPicture(String picture) {
+    this.picture = picture;
+  }
+
+  public String getPicture() {
+    return picture;
   }
 }

@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Base64;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,7 @@ class ProfilePictureServiceTest {
   private ProfilePictureService profilePictureService;
 
   @Test
-  void testGetAllProfilePicture() {
+  void testGetProfilePicture() {
     User user = new User();
     user.setId(1L);
 
@@ -42,15 +43,17 @@ class ProfilePictureServiceTest {
     picture.setPicture(new byte[]{1, 2, 3});
     user.setProfilePicture(picture);
 
+    String expectedBase64 = Base64.getEncoder().encodeToString(new byte[]{1, 2, 3});
+
     ProfilePictureDTO dto = new ProfilePictureDTO();
-    dto.setPicture(new byte[]{1, 2, 3});
+    dto.setPicture(expectedBase64);
 
     when(userRepository.findById(1L)).thenReturn(Optional.of(user));
     when(profilePictureMapper.convertToDTO(picture)).thenReturn(dto);
 
     ProfilePictureDTO result = profilePictureService.getProfilePicture(1L);
 
-    assertThat(result.getPicture()).isEqualTo(new byte[]{1, 2, 3});
+    assertThat(result.getPicture()).isEqualTo(expectedBase64);
     verify(userRepository).findById(1L);
   }
 }
