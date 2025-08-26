@@ -1,23 +1,19 @@
 package com.pecunia.api.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.pecunia.api.model.ProfilePicture;
 import com.pecunia.api.model.User;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-
 @DataJpaTest
 public class ProfilePictureRepositoryTest {
 
-  @Autowired
-  private ProfilePictureRepository profilePictureRepository;
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private ProfilePictureRepository profilePictureRepository;
+  @Autowired private UserRepository userRepository;
 
   @Test
   void testFindAllProfilePictures() {
@@ -55,5 +51,4 @@ public class ProfilePictureRepositoryTest {
 
     assertThat(found.getFirstname()).isEqualTo("Jane");
   }
-
 }

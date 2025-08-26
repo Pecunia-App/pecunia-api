@@ -2,10 +2,8 @@ package com.pecunia.api.mapper;
 
 import com.pecunia.api.dto.ProfilePictureDTO;
 import com.pecunia.api.model.ProfilePicture;
-import org.springframework.stereotype.Component;
-
 import java.util.Base64;
-
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProfilePictureMapper {
@@ -32,5 +30,3 @@ public class ProfilePictureMapper {
     return profilePictureDTO;
   }
 }
-  
-

@@ -10,7 +10,7 @@ public class ProfilePicture {
   private Long id;
 
   @Lob
-  @Column(nullable = false, columnDefinition ="MEDIUMBLOB")
+  @Column(nullable = false, columnDefinition = "MEDIUMBLOB")
   private byte[] picture;
 
   @OneToOne(mappedBy = "profilePicture")
