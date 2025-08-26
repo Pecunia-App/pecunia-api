@@ -4,6 +4,8 @@ import com.pecunia.api.dto.transaction.TransactionDto;
 import com.pecunia.api.dto.wallet.WalletCreateDto;
 import com.pecunia.api.dto.wallet.WalletDto;
 import com.pecunia.api.dto.wallet.WalletUpdateDto;
+import com.pecunia.api.security.CanAccessWallet;
+import com.pecunia.api.security.HasRole;
 import com.pecunia.api.service.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,7 +41,7 @@ public class WalletController {
    */
   @GetMapping()
   @Operation(summary = "Return all wallets", description = "Role Admin Require")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HasRole("ADMIN")
   public ResponseEntity<List<WalletDto>> getAllWallets() {
     List<WalletDto> wallets = walletService.getAllWallets();
     return wallets.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(wallets);
@@ -56,9 +58,7 @@ public class WalletController {
   @Operation(
       summary = "Return all transactions from a wallet",
       description = "Role Admin require or login with correct user id.")
-  @PreAuthorize(
-      "@walletService.isWalletOwnedByUser(#id, authentication.principal.id) or"
-          + " hasRole('ROLE_ADMIN')")
+  @CanAccessWallet
   public ResponseEntity<Page<TransactionDto>> getAllTransactionsByWallet(
       @PathVariable Long id, Pageable pageable) {
     Page<TransactionDto> transactions = walletService.getTransactionsWallet(id, pageable);
@@ -77,9 +77,7 @@ public class WalletController {
   @Operation(
       summary = "Get a specific Wallet by id",
       description = "Role Admin require or login with correct user id")
-  @PreAuthorize(
-      "@walletService.isWalletOwnedByUser(#id, authentication.principal.id) or"
-          + " hasRole('ROLE_ADMIN')")
+  @CanAccessWallet
   public ResponseEntity<WalletDto> getWalletById(@PathVariable Long id) {
     WalletDto wallet = walletService.getWalletById(id);
     return wallet == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(wallet);
@@ -96,9 +94,7 @@ public class WalletController {
   @Operation(
       summary = "Update a specific Wallet by Id",
       description = "Role Admin require or login with correct user id.")
-  @PreAuthorize(
-      "@walletService.isWalletOwnedByUser(#id, authentication.principal.id) or"
-          + " hasRole('ROLE_ADMIN')")
+  @CanAccessWallet
   public ResponseEntity<WalletUpdateDto> updateWallet(
       @PathVariable Long id, @Valid @RequestBody WalletUpdateDto wallet) {
     WalletUpdateDto updateWallet = walletService.update(id, wallet);
@@ -114,10 +110,10 @@ public class WalletController {
    * @returnSTATUS 201
    */
   @PostMapping()
-  @PreAuthorize("#wallet.userId == authentication.principal.id or hasRole('ROLE_ADMIN')")
   @Operation(
       summary = "Create a new wallet link by an user",
-      description = "Role Admin require or user who create a new account.")
+      description = "Role Admin require or user who create the wallet.")
+  @PreAuthorize("#wallet.userId == authentication.principal.id or hasRole('ROLE_ADMIN')")
   public ResponseEntity<WalletCreateDto> createWallet(@Valid @RequestBody WalletCreateDto wallet) {
     WalletCreateDto savedWallet = walletService.create(wallet);
     return ResponseEntity.status(HttpStatus.CREATED).body(savedWallet);
@@ -130,10 +126,10 @@ public class WalletController {
    * @return Soit une 204 ou une 404
    */
   @DeleteMapping("/{id}")
-  @Operation()
-  @PreAuthorize(
-      "@walletService.isWalletOwnedByUser(#id, authentication.principal.id) or"
-          + " hasRole('ROLE_ADMIN')")
+  @Operation(
+      summary = "Delete a wallet and his transactions.",
+      description = "Role admin require or user who create the wallet.")
+  @CanAccessWallet
   public ResponseEntity<Void> deleteWallet(@PathVariable Long id) {
     return walletService.delete(id)
         ? ResponseEntity.noContent().build()
