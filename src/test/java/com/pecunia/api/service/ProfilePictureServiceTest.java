@@ -1,38 +1,33 @@
 package com.pecunia.api.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.pecunia.api.dto.ProfilePictureDTO;
+import com.pecunia.api.mapper.ProfilePictureMapper;
 import com.pecunia.api.model.ProfilePicture;
 import com.pecunia.api.model.User;
-import com.pecunia.api.repository.UserRepository;
-import org.junit.jupiter.api.Test;
-import com.pecunia.api.mapper.ProfilePictureMapper;
 import com.pecunia.api.repository.ProfilePictureRepository;
+import com.pecunia.api.repository.UserRepository;
+import java.util.Base64;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Base64;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ProfilePictureServiceTest {
 
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-  @Mock
-  private ProfilePictureRepository profilePictureRepository;
+  @Mock private ProfilePictureRepository profilePictureRepository;
 
-  @Mock
-  private ProfilePictureMapper profilePictureMapper;
+  @Mock private ProfilePictureMapper profilePictureMapper;
 
-  @InjectMocks
-  private ProfilePictureService profilePictureService;
+  @InjectMocks private ProfilePictureService profilePictureService;
 
   @Test
   void testGetProfilePicture() {
@@ -40,10 +35,10 @@ class ProfilePictureServiceTest {
     user.setId(1L);
 
     ProfilePicture picture = new ProfilePicture();
-    picture.setPicture(new byte[]{1, 2, 3});
+    picture.setPicture(new byte[] {1, 2, 3});
     user.setProfilePicture(picture);
 
-    String expectedBase64 = Base64.getEncoder().encodeToString(new byte[]{1, 2, 3});
+    String expectedBase64 = Base64.getEncoder().encodeToString(new byte[] {1, 2, 3});
 
     ProfilePictureDTO dto = new ProfilePictureDTO();
     dto.setPicture(expectedBase64);
