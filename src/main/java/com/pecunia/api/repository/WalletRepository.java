@@ -13,4 +13,13 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
    * @return wallet.
    */
   Optional<Wallet> findByName(String name);
+
+  /**
+   * method to search if a wallet are with the user who creates it.
+   *
+   * @param id wallet id
+   * @param userId id du wallet
+   * @return boolean
+   */
+  boolean existsByIdAndUserId(Long id, Long userId);
 }

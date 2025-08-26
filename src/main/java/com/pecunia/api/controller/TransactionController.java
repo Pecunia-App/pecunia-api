@@ -3,6 +3,8 @@ package com.pecunia.api.controller;
 import com.pecunia.api.dto.transaction.TransactionCreateDto;
 import com.pecunia.api.dto.transaction.TransactionDto;
 import com.pecunia.api.dto.transaction.TransactionUpdateDto;
+import com.pecunia.api.security.CanAccessTransaction;
+import com.pecunia.api.security.HasRole;
 import com.pecunia.api.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -43,7 +45,7 @@ public class TransactionController {
    */
   @GetMapping
   @Operation(summary = "Return all transaction wih pagination", description = "Role Admin require")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HasRole("ADMIN")
   public ResponseEntity<Page<TransactionDto>> getAllTransactions(Pageable pageable) {
     Page<TransactionDto> transactions = transactionService.getAll(pageable);
     return transactions.isEmpty()
@@ -61,9 +63,7 @@ public class TransactionController {
   @Operation(
       summary = "Get a specific Transaction by id",
       description = "Role Admin require or login with correct user id")
-  @PreAuthorize(
-      "@transactionService.isTransactionOwnedByWalletUserById(#id,"
-          + " authentication.principal.id) or hasRole('ROLE_ADMIN')")
+  @CanAccessTransaction
   public ResponseEntity<TransactionDto> getTransactionById(@PathVariable Long id) {
     TransactionDto transaction = transactionService.getTransactionById(id);
     return transaction == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(transaction);
@@ -99,9 +99,7 @@ public class TransactionController {
   @Operation(
       summary = "Update a specific transaction",
       description = "Role admin require or login with correct user id.")
-  @PreAuthorize(
-      "@transactionService.isTransactionOwnedByWalletUserById(#id,"
-          + " authentication.principal.id) or hasRole('ROLE_ADMIN')")
+  @CanAccessTransaction
   public ResponseEntity<TransactionUpdateDto> updateWallet(
       @PathVariable Long id, @Valid @RequestBody TransactionUpdateDto transactionUpdateDto) {
     TransactionUpdateDto updateTransaction = transactionService.update(id, transactionUpdateDto);
@@ -118,9 +116,7 @@ public class TransactionController {
    */
   @DeleteMapping("/{id}")
   @Operation()
-  @PreAuthorize(
-      "@transactionService.isTransactionOwnedByWalletUserById(#id,"
-          + " authentication.principal.id) or hasRole('ROLE_ADMIN')")
+  @CanAccessTransaction
   public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
     return transactionService.delete(id)
         ? ResponseEntity.noContent().build()
