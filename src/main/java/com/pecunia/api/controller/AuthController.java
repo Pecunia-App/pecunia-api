@@ -4,6 +4,7 @@ import com.pecunia.api.dto.UserLoginDTO;
 import com.pecunia.api.dto.UserRegistrationDTO;
 import com.pecunia.api.model.User;
 import com.pecunia.api.security.AuthenticationService;
+import com.pecunia.api.security.HasRole;
 import com.pecunia.api.security.TokenBlackList;
 import com.pecunia.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +13,6 @@ import jakarta.validation.Valid;
 import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -52,11 +52,11 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
   }
 
-  @PreAuthorize("hasRole('ADMIN')")
   @Operation(
       summary = "Create a new user",
       description = "Same as register method but for admin have better controle.")
   @PostMapping("/create-user")
+  @HasRole("ADMIN")
   public ResponseEntity<User> createUser(
       @Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
     User registeredUser =

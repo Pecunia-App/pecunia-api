@@ -5,6 +5,7 @@ import com.pecunia.api.dto.tag.TagRequestDto;
 import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.mapper.TagMapper;
 import com.pecunia.api.model.Tag;
+import com.pecunia.api.model.Transaction;
 import com.pecunia.api.repository.TagRepository;
 import java.time.LocalDateTime;
 import org.springdoc.core.annotations.ParameterObject;
@@ -99,6 +100,26 @@ public class TagService {
     if (tagCreateDto.getTagName() == null) {
       throw new IllegalArgumentException("Tag name cannot be null.");
     }
+  }
+
+  /**
+   * Delete a tag.
+   *
+   * @param id tag id
+   */
+  public boolean delete(Long id) {
+    Tag tag = getTagByIdOrThrow(id);
+    if (tag == null) {
+      return false;
+    }
+    if (tag.getTransactions() != null) {
+      for (Transaction transaction : tag.getTransactions()) {
+        transaction.getTags().remove(tag);
+      }
+      tag.getTransactions().clear();
+    }
+    tagRepository.delete(tag);
+    return true;
   }
 
   /**

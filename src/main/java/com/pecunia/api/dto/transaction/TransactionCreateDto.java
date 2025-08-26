@@ -2,6 +2,7 @@ package com.pecunia.api.dto.transaction;
 
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.TransactionType;
+import com.pecunia.api.validator.PositiveMoney;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.Set;
@@ -9,6 +10,8 @@ import java.util.Set;
 /** TransactionCreateDto. */
 public class TransactionCreateDto {
   @NotNull(message = "Le montant ne doit pas être vide.")
+  @PositiveMoney(
+      message = "Le montant ne peut pas être négatif. Changer le type vers DEBIT pour du négatif.")
   private Money amount;
 
   private TransactionType type;

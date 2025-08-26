@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 /** TransactionRepository. */
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
   /**
    * Find all transactions by Wallet.
    *
@@ -15,4 +16,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
    * @return transactions
    */
   Page<Transaction> findByWalletId(Long walletId, Pageable pageable);
+
+  boolean existsByIdAndWalletUserId(Long id, Long walletUserId);
 }
