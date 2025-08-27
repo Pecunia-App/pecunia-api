@@ -53,7 +53,7 @@ class ProfilePictureControllerTest {
     when(profilePictureService.getProfilePicture(userId)).thenReturn(dto);
 
     mockMvc
-        .perform(get("/profile-picture/{userId}", userId))
+        .perform(get("/profile-pictures/users/{userId}", userId))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.picture").value(expectedBase64))
         .andExpect(jsonPath("$.userId").value((int) userId));
