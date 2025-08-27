@@ -269,6 +269,11 @@ public class Money implements Comparable<Money> {
     return (compareTo(other) > 0);
   }
 
+  @Override
+  public String toString() {
+    return amount() + "|" + currency;
+  }
+
   /**
    * Retourne le facteur de conversion pour la devise, c'est-à-dire le nombre de centimes que
    * représente une unité de la devise. Par exemple, pour l'euro et le dollar, le facteur est 100.
