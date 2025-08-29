@@ -29,7 +29,6 @@ public class WalletMapper {
   }
 
   public WalletDto convertToDto(Wallet wallet) {
-
     WalletDto walletDto = new WalletDto();
     walletDto.setId(wallet.getId());
     walletDto.setName(wallet.getName());
