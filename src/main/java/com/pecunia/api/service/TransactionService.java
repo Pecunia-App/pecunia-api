@@ -7,10 +7,12 @@ import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.exception.TransactionTypeNotSupportedException;
 import com.pecunia.api.mapper.TransactionMapper;
 import com.pecunia.api.model.Money;
+import com.pecunia.api.model.Provider;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.TagRepository;
 import com.pecunia.api.repository.TransactionRepository;
 import com.pecunia.api.repository.WalletRepository;
@@ -29,6 +31,7 @@ public class TransactionService {
   private final TransactionMapper transactionMapper;
   private final WalletRepository walletRepository;
   private final TagRepository tagRepository;
+  private final ProviderRepository providerRepository;
 
   /**
    * Repository constructor.
@@ -39,11 +42,13 @@ public class TransactionService {
       TransactionRepository transactionRepository,
       TransactionMapper transactionMapper,
       WalletRepository walletRepository,
-      TagRepository tagRepository) {
+      TagRepository tagRepository,
+      ProviderRepository providerRepository) {
     this.transactionRepository = transactionRepository;
     this.transactionMapper = transactionMapper;
     this.walletRepository = walletRepository;
     this.tagRepository = tagRepository;
+    this.providerRepository = providerRepository;
   }
 
   /**
@@ -97,8 +102,12 @@ public class TransactionService {
         throw new IllegalArgumentException("Certains tags n'existents pas.");
       }
     }
+    Provider provider =
+        providerRepository
+            .findById(transactionCreateDto.getProviderId())
+            .orElseThrow(() -> new IllegalArgumentException("Provider not found"));
     Transaction transaction =
-        transactionMapper.convertCreateDtoToEntity(transactionCreateDto, wallet, tags);
+        transactionMapper.convertCreateDtoToEntity(transactionCreateDto, wallet, tags, provider);
     Transaction savedTransaction = transactionRepository.save(transaction);
     updateWalletBalance(wallet, transactionCreateDto.getAmount(), transactionCreateDto.getType());
     return transactionMapper.convertToCreateDto(savedTransaction);
@@ -167,6 +176,13 @@ public class TransactionService {
         throw new IllegalArgumentException("Certains tags n'existent pas.");
       }
       transaction.setTags(newTags);
+    }
+    if (transactionUpdateDto.getProviderId() != null) {
+      Provider newProvider =
+          providerRepository
+              .findById(transactionUpdateDto.getProviderId())
+              .orElseThrow(() -> new IllegalArgumentException("Provider n'existe pas."));
+      transaction.setProvider(newProvider);
     }
 
     transaction.setUpdatedAt(LocalDateTime.now());
@@ -249,7 +265,7 @@ public class TransactionService {
             .orElseThrow(
                 () ->
                     new ResourceNotFoundException(
-                        "La transaction avec l'id" + id + " n'a pas été trouvé."));
+                        "La transaction avec l'id " + id + " n'a pas été trouvé."));
     return transaction;
   }
 }
