@@ -1,3 +1,38 @@
+## 0.4.0 (2025-08-29)
+
+### BREAKING CHANGE
+
+- Before this commit, a wallet cannot be delete without delete an user.
+Now an user can "reset" a wallet by delete it.
+- New entity in OneToOne with User entity.
+A wallet cannot be create without an user attached at all.
+
+### Feat
+
+- **tag-transaction**: create crud tag;add tags to transaction objects
+- **tag**: create repository
+- **tag**: add entity
+- **change-ProfilePictureService-and-ProfilePictureController**: add the possibility to change a profile picture and to delete it
+- **add-ProfilePictureMapper,-ProfilePictureService,-ProfilePicture-Repository,-change-UserUpdateDTO,-GlobalExceptionHandler,-ProfilePicture,-User-and-application.properties**: add th possibility to post and get a profile picture for a user
+- **Create-ProfilePicture,change-UserMapper,-User,-UserUpdateDTO,-UserService**: creation of the profilepicture entity and add the relation one to one in the user entity and modify userupdatedto usermapper userservice to adapt the profilepicture
+- **data-init**: add test user in dev profile for frontend testing
+- **transaction**: create entity,repository, controller, service
+- **Money**: implement Money Pattern from Martin Fowler
+- **Wallet**: create layers for Wallet entity ; add unit and integrations tests
+
+### Fix
+
+- **ProfilePictureService,-ProfilePictureController,-application.properties,-ProfilePictureControllerTest**: delete the package-lock, json and change the endpoint and replace bad request by conflict add a message for svg and modify the max width of the image
+
+### Refactor
+
+- **security-methods**: create meta-annotation using SpEL authorization expressions to stop writing duplicate codes
+- **transaction**: add a custom validator for amount parameter in
+Money Value Object to check if amount is zero or positive number
+- **transaction-update**: can update created Date transaction
+- **wallet-update**: wallet can be update without all parameters
+- **wallet**: refine test for value obejct money;create factories for entities ; modify wallet repo test
+
 ## 0.3.0 (2025-08-10)
 
 ### Feat
