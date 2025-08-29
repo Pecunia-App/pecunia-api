@@ -47,6 +47,16 @@ public class Transaction extends BaseEntity {
 
   public void setTags(Set<Tag> tags) {
     this.tags = tags;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "provider_id")
+  private Provider provider;
+
+  public Provider getProvider() {
+    return provider;
+  }
+
+  public void setProvider(Provider provider) {
+    this.provider = provider;
   }
 
   public Long getId() {

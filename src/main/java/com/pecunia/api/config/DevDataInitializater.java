@@ -26,6 +26,7 @@ public class DevDataInitializater {
         user.setLastname("Pecunia");
         user.setEmail("test@pecunia.fr");
         user.setPassword(passwordEncoder.encode(testUserPassword));
+        user.getRoles().add("ROLE_ADMIN");
         user.getRoles().add("ROLE_USER");
         userRepository.save(user);
 
