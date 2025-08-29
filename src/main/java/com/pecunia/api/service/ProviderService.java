@@ -6,6 +6,7 @@ import com.pecunia.api.dto.provider.ProviderUpdateDto;
 import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.mapper.ProviderMapper;
 import com.pecunia.api.model.Provider;
+import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.User;
 import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.UserRepository;
@@ -64,6 +65,21 @@ public class ProviderService {
     }
     Provider updatedProvider = providerRepository.save(provider);
     return providerMapper.convertToUpdateDto(updatedProvider);
+  }
+
+  public boolean delete(Long providerId) {
+    Provider provider = getProviderByIdOrThrow(providerId);
+    if (provider == null) {
+      return false;
+    }
+    if (provider.getTransactions() != null) {
+      for (Transaction transaction : provider.getTransactions()) {
+        transaction.setProvider(null);
+      }
+      provider.getTransactions().clear();
+    }
+    providerRepository.delete(provider);
+    return true;
   }
 
   private Provider getProviderByIdOrThrow(Long providerId) {
