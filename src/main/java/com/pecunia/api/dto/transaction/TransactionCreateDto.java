@@ -23,6 +23,15 @@ public class TransactionCreateDto {
   private Long walletId;
 
   private Set<Long> tagsIds;
+  private Long providerId;
+
+  public Long getProviderId() {
+    return providerId;
+  }
+
+  public void setProviderId(Long providerId) {
+    this.providerId = providerId;
+  }
 
   public Money getAmount() {
     return amount;
