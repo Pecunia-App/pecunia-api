@@ -41,6 +41,18 @@ public class Transaction extends BaseEntity {
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> tags = new HashSet<>();
 
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "provider_id")
+  private Provider provider;
+
+  public Provider getProvider() {
+    return provider;
+  }
+
+  public void setProvider(Provider provider) {
+    this.provider = provider;
+  }
+
   public Set<Tag> getTags() {
     return tags;
   }
