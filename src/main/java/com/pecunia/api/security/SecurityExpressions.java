@@ -1,6 +1,7 @@
 package com.pecunia.api.security;
 
 import com.pecunia.api.model.User;
+import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.TransactionRepository;
 import com.pecunia.api.repository.UserRepository;
 import com.pecunia.api.repository.WalletRepository;
@@ -14,14 +15,17 @@ public class SecurityExpressions {
   private final TransactionRepository transactionRepository;
   private final WalletRepository walletRepository;
   private final UserRepository userRepository;
+  private final ProviderRepository providerRepository;
 
   public SecurityExpressions(
       TransactionRepository transactionRepository,
       WalletRepository walletRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      ProviderRepository providerRepository) {
     this.transactionRepository = transactionRepository;
     this.walletRepository = walletRepository;
     this.userRepository = userRepository;
+    this.providerRepository = providerRepository;
   }
 
   /**
@@ -37,6 +41,7 @@ public class SecurityExpressions {
       case "transaction" ->
           transactionRepository.existsByIdAndWalletUserId(resourceId, currentUserId);
       case "wallet" -> walletRepository.existsByIdAndUserId(resourceId, currentUserId);
+      case "provider" -> providerRepository.existsByIdAndUserId(resourceId, currentUserId);
       default -> throw new IllegalArgumentException("Uknown resource type: " + resourceType);
     };
   }

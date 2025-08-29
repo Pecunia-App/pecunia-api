@@ -104,7 +104,7 @@ public class WalletController {
   }
 
   /**
-   * Creation d'un wallet en meme temps que la creation d'un {@code User}.
+   * Creation d'un wallet. *
    *
    * @param wallet Body pour la création
    * @returnSTATUS 201
