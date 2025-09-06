@@ -20,6 +20,15 @@ public class TransactionUpdateDto {
   private LocalDateTime createdAt;
 
   private Set<Long> tagsIds;
+  private Long providerId;
+
+  public Long getProviderId() {
+    return providerId;
+  }
+
+  public void setProviderId(Long providerId) {
+    this.providerId = providerId;
+  }
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
