@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,8 +81,23 @@ public class ProviderController {
     return providers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(providers);
   }
 
+  @GetMapping("/{providerId}")
+  @Operation()
+  @CanAccessProvider
+  public ResponseEntity<ProviderDto> getProviderById(@PathVariable Long providerId) {
+    ProviderDto provider = providerService.getProviderById(providerId);
+    return provider == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(provider);
+  }
+
+  /**
+   * Create a Provider.
+   *
+   * @param provider providerCreateDto
+   * @return new provider or bad request
+   */
   @PostMapping
   @Operation()
+  @PreAuthorize("hasRole('ADMIN') or #provider.userId == authentication.principal.id")
   public ResponseEntity<ProviderCreateDto> createProvider(
       @Valid @RequestBody ProviderCreateDto provider) {
     ProviderCreateDto savedProvider = providerService.create(provider);

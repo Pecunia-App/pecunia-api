@@ -2,12 +2,14 @@ package com.pecunia.api.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.pecunia.api.builder.CategoryFactory;
 import com.pecunia.api.builder.TransactionFactory;
 import com.pecunia.api.builder.UserFactory;
 import com.pecunia.api.builder.WalletFactory;
+import com.pecunia.api.model.Category;
+import com.pecunia.api.model.CategoryType;
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.Transaction;
-import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.model.User;
 import com.pecunia.api.model.Wallet;
 import java.math.BigDecimal;
@@ -34,6 +36,15 @@ class TransactionRepositoryTest {
     User user1 =
         UserFactory.user().withName("John", "Doe").withEmail("user1@test.fr").build(entityManager);
 
+    Category category1 =
+        CategoryFactory.category()
+            .withName("Category")
+            .withColor("#F23")
+            .withIcon("icon")
+            .withType(CategoryType.DEBIT)
+            .withUser(user1)
+            .build(entityManager);
+
     Money amountTransaction1 =
         new Money(new BigDecimal("1203.45"), Currency.getInstance("EUR"), RoundingMode.HALF_EVEN);
     Wallet wallet1 =
@@ -45,7 +56,7 @@ class TransactionRepositoryTest {
 
     Transaction transaction1 =
         TransactionFactory.transaction()
-            .withType(TransactionType.DEBIT)
+            .withCategory(category1)
             .withNote("TEst note")
             .withAmount(amountTransaction1)
             .forWallet(wallet1)
@@ -53,6 +64,15 @@ class TransactionRepositoryTest {
 
     User user2 =
         UserFactory.user().withName("Jane", "Doe").withEmail("user2@test.fr").build(entityManager);
+
+    Category category2 =
+        CategoryFactory.category()
+            .withName("Category 2")
+            .withType(CategoryType.CREDIT)
+            .withColor("#F23")
+            .withIcon("icon")
+            .withUser(user2)
+            .build(entityManager);
 
     Money amountTransaction2 =
         new Money(new BigDecimal("120.45"), Currency.getInstance("JPY"), RoundingMode.HALF_EVEN);
@@ -65,20 +85,20 @@ class TransactionRepositoryTest {
 
     Transaction transaction2 =
         TransactionFactory.transaction()
-            .withType(TransactionType.CREDIT)
             .withNote("debit note")
             .withAmount(amountTransaction2)
+            .withCategory(category2)
             .forWallet(wallet2)
             .build(entityManager);
 
     transactionRepository.saveAll(List.of(transaction1, transaction2));
-    Pageable pageable = PageRequest.of(0, 5, Direction.ASC, "type");
+    Pageable pageable = PageRequest.of(0, 5, Direction.ASC, "category");
     Page<Transaction> transactions = transactionRepository.findAll(pageable);
     assertThat(transactions).hasSize(2);
-    assertThat(transactions.getContent().get(0).getType())
-        .isEqualByComparingTo(TransactionType.DEBIT);
-    assertThat(transactions.getContent().get(1).getType())
-        .isEqualByComparingTo(TransactionType.CREDIT);
+    assertThat(transactions.getContent().get(0).getCategoryType())
+        .isEqualByComparingTo(CategoryType.DEBIT);
+    assertThat(transactions.getContent().get(1).getCategoryType())
+        .isEqualByComparingTo(CategoryType.CREDIT);
     assertThat(transactions.getContent().get(0).getAmount().getCurrencyCode()).isIn("EUR", "JPY");
     assertThat(transactions.getContent().get(1).getAmount().getCurrencyCode()).isIn("EUR", "JPY");
     assertThat(transactions.getPageable().getPageSize()).isEqualTo(5);

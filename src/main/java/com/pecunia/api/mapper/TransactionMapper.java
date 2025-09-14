@@ -4,6 +4,7 @@ import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.dto.transaction.TransactionCreateDto;
 import com.pecunia.api.dto.transaction.TransactionDto;
 import com.pecunia.api.dto.transaction.TransactionUpdateDto;
+import com.pecunia.api.model.Category;
 import com.pecunia.api.model.Provider;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
@@ -30,7 +31,7 @@ public class TransactionMapper {
     dto.setId(transaction.getId());
     dto.setNote(transaction.getNote());
     dto.setAmount(transaction.getAmount());
-    dto.setType(transaction.getType());
+    dto.setType(transaction.getCategoryType());
     dto.setCreatedAt(transaction.getCreatedAt());
     dto.setUpdatedAt(transaction.getUpdatedAt());
     if (transaction.getTags() != null) {
@@ -38,23 +39,25 @@ public class TransactionMapper {
           transaction.getTags().stream().map(tagMapper::convertToDto).collect(Collectors.toSet());
       dto.setTags(tagDtos);
     }
-    dto.setProvider(transaction.getProvider());
-
+    if (transaction.getProvider() != null) {
+      dto.setProvider(transaction.getProvider());
+    }
     return dto;
   }
 
   public Transaction convertCreateDtoToEntity(
-      TransactionCreateDto dto, Wallet wallet, Set<Tag> tags, Provider provider) {
+      TransactionCreateDto dto,
+      Wallet wallet,
+      Set<Tag> tags,
+      Provider provider,
+      Category category) {
     Transaction transaction = new Transaction();
     transaction.setAmount(dto.getAmount());
     transaction.setNote(dto.getNote());
-    transaction.setType(dto.getType());
     transaction.setTags(tags);
     transaction.setWallet(wallet);
-    if (transaction.getProvider() != null) {
-      transaction.setProvider(provider);
-    }
-    transaction.setProvider(null);
+    transaction.setProvider(provider);
+    transaction.setCategory(category);
 
     return transaction;
   }
@@ -63,14 +66,16 @@ public class TransactionMapper {
     TransactionCreateDto dto = new TransactionCreateDto();
     dto.setAmount(transaction.getAmount());
     dto.setNote(transaction.getNote());
-    dto.setType(transaction.getType());
     dto.setWalletId(transaction.getWallet().getId());
     if (transaction.getTags() != null) {
       Set<Long> tagsIds =
           transaction.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
       dto.setTagsIds(tagsIds);
     }
-    dto.setProviderId(transaction.getProvider().getId());
+    if (transaction.getProvider() != null) {
+      dto.setProviderId(transaction.getProvider().getId());
+    }
+    dto.setCategoryId(transaction.getCategory().getId());
 
     return dto;
   }
@@ -79,14 +84,16 @@ public class TransactionMapper {
     TransactionUpdateDto dto = new TransactionUpdateDto();
     dto.setAmount(transaction.getAmount());
     dto.setNote(transaction.getNote());
-    dto.setType(transaction.getType());
     dto.setCreatedAt(transaction.getCreatedAt());
     if (transaction.getTags() != null) {
       Set<Long> tagsIds =
           transaction.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
       dto.setTagsIds(tagsIds);
     }
-    dto.setProviderId(transaction.getProvider().getId());
+    if (transaction.getProvider() != null) {
+      dto.setProviderId(transaction.getProvider().getId());
+    }
+    dto.setCategoryId(transaction.getCategory().getId());
 
     return dto;
   }
@@ -95,7 +102,6 @@ public class TransactionMapper {
     Transaction transaction = new Transaction();
     transaction.setAmount(dto.getAmount());
     transaction.setNote(dto.getNote());
-    transaction.setType(dto.getType());
 
     return transaction;
   }

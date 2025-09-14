@@ -47,6 +47,11 @@ public class ProviderService {
     return providers.map(providerMapper::convertToDto);
   }
 
+  public ProviderDto getProviderById(Long providerId) {
+    Provider provider = getProviderByIdOrThrow(providerId);
+    return provider != null ? providerMapper.convertToDto(provider) : null;
+  }
+
   public ProviderCreateDto create(ProviderCreateDto providerCreateDto) {
     validateProviderCreation(providerCreateDto);
     User user =

@@ -1,16 +1,16 @@
 package com.pecunia.api.dto.transaction;
 
 import com.pecunia.api.dto.tag.TagDto;
+import com.pecunia.api.model.CategoryType;
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.Provider;
-import com.pecunia.api.model.TransactionType;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 /** TransactionDto. */
 public class TransactionDto {
   private Long id;
-  private TransactionType type;
+  private CategoryType type;
   private String note;
   private Money amount;
   private Set<TagDto> tags;
@@ -27,11 +27,11 @@ public class TransactionDto {
     this.id = id;
   }
 
-  public TransactionType getType() {
+  public CategoryType getType() {
     return type;
   }
 
-  public void setType(TransactionType type) {
+  public void setType(CategoryType type) {
     this.type = type;
   }
 

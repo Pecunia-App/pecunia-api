@@ -27,7 +27,6 @@ public class Transaction extends BaseEntity {
   @Column
   private Money amount;
 
-  @Column private TransactionType type;
   @Column private String note;
 
   @ManyToOne(fetch = FetchType.EAGER)
@@ -44,6 +43,18 @@ public class Transaction extends BaseEntity {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "provider_id")
   private Provider provider;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "category_id")
+  private Category category;
+
+  public Category getCategory() {
+    return category;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
+  }
 
   public Provider getProvider() {
     return provider;
@@ -85,19 +96,15 @@ public class Transaction extends BaseEntity {
     this.wallet = wallet;
   }
 
-  public TransactionType getType() {
-    return type;
-  }
-
-  public void setType(TransactionType type) {
-    this.type = type;
-  }
-
   public String getNote() {
     return note;
   }
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  public CategoryType getCategoryType() {
+    return category.getType();
   }
 }

@@ -1,7 +1,6 @@
 package com.pecunia.api.dto.transaction;
 
 import com.pecunia.api.model.Money;
-import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.validator.PositiveMoney;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,8 +13,6 @@ public class TransactionCreateDto {
       message = "Le montant ne peut pas être négatif. Changer le type vers DEBIT pour du négatif.")
   private Money amount;
 
-  private TransactionType type;
-
   @Size(min = 0, max = 20, message = "La note peut contenir un maximum de 20 caractères.")
   private String note;
 
@@ -24,6 +21,7 @@ public class TransactionCreateDto {
 
   private Set<Long> tagsIds;
   private Long providerId;
+  private Long categoryId;
 
   public Long getProviderId() {
     return providerId;
@@ -39,14 +37,6 @@ public class TransactionCreateDto {
 
   public void setAmount(Money amount) {
     this.amount = amount;
-  }
-
-  public TransactionType getType() {
-    return type;
-  }
-
-  public void setType(TransactionType type) {
-    this.type = type;
   }
 
   public String getNote() {
@@ -71,5 +61,13 @@ public class TransactionCreateDto {
 
   public void setTagsIds(Set<Long> tagsIds) {
     this.tagsIds = tagsIds;
+  }
+
+  public Long getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Long categoryId) {
+    this.categoryId = categoryId;
   }
 }

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.anySet;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
@@ -13,12 +13,14 @@ import static org.mockito.Mockito.when;
 
 import com.pecunia.api.dto.transaction.TransactionCreateDto;
 import com.pecunia.api.mapper.TransactionMapper;
+import com.pecunia.api.model.Category;
+import com.pecunia.api.model.CategoryType;
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.Provider;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
-import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.CategoryRepository;
 import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.TagRepository;
 import com.pecunia.api.repository.TransactionRepository;
@@ -43,26 +45,29 @@ public class TransactionServiceCreateUnitTest {
   @Mock private TransactionRepository transactionRepository;
   @Mock private TransactionMapper transactionMapper;
   @Mock private ProviderRepository providerRepository;
+  @Mock private CategoryRepository categoryRepository;
   @InjectMocks private TransactionService transactionService;
 
   @Test
-  void shouldCreateATransactionAndUpdateWalletBalance() {
+  void shouldCreateAtransactionAndUpdateWalletBalance() {
+    new Money();
     Long walletId = 1L;
     Long tagId = 1L;
     Set<Long> tagIds = Set.of(tagId);
     final Long providerId = 1L;
+    Long categoryId = 1L;
 
     TransactionCreateDto createDto = new TransactionCreateDto();
     createDto.setWalletId(walletId);
-    createDto.setAmount(new Money().euros(123.54));
-    createDto.setType(TransactionType.DEBIT);
+    createDto.setAmount(Money.euros(123.54));
     createDto.setNote("Test transaction");
     createDto.setTagsIds(tagIds);
     createDto.setProviderId(providerId);
+    createDto.setCategoryId(categoryId);
 
     Wallet mockWallet = new Wallet();
     mockWallet.setId(walletId);
-    mockWallet.setAmountBalance(new Money().euros(500.00));
+    mockWallet.setAmountBalance(Money.euros(500.00));
 
     Tag mockTag = new Tag();
     mockTag.setId(tagId);
@@ -72,23 +77,30 @@ public class TransactionServiceCreateUnitTest {
     mockProvider.setId(providerId);
     mockProvider.setProviderName("test provider");
 
+    Category mockCategory = new Category();
+    mockCategory.setId(categoryId);
+    mockCategory.setCategoryName("test category");
+    mockCategory.setType(CategoryType.DEBIT);
+
     Transaction mockTransaction = new Transaction();
     mockTransaction.setId(1L);
     mockTransaction.setAmount(createDto.getAmount());
-    mockTransaction.setType(createDto.getType());
+    mockTransaction.setCategory(mockCategory);
 
     Transaction savedTransaction = new Transaction();
     savedTransaction.setId(1L);
 
     TransactionCreateDto expectedResult = new TransactionCreateDto();
     expectedResult.setAmount(createDto.getAmount());
-    expectedResult.setType(createDto.getType());
+    expectedResult.setCategoryId(createDto.getCategoryId());
 
     // Assert
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(mockWallet));
     when(tagRepository.findAllById(tagIds)).thenReturn(List.of(mockTag));
     when(providerRepository.findById(providerId)).thenReturn(Optional.of(mockProvider));
-    when(transactionMapper.convertCreateDtoToEntity(createDto, mockWallet, mockTags, mockProvider))
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(mockCategory));
+    when(transactionMapper.convertCreateDtoToEntity(
+            createDto, mockWallet, mockTags, mockProvider, mockCategory))
         .thenReturn(mockTransaction);
     when(transactionRepository.save(mockTransaction)).thenReturn(savedTransaction);
     when(transactionMapper.convertToCreateDto(savedTransaction)).thenReturn(expectedResult);
@@ -96,12 +108,13 @@ public class TransactionServiceCreateUnitTest {
     TransactionCreateDto result = transactionService.create(createDto);
 
     assertThat(result).isNotNull();
-    assertEquals(new Money().euros(123.54), result.getAmount());
+    assertEquals(Money.euros(123.54), result.getAmount());
     verify(walletRepository).findById(walletId);
     verify(tagRepository).findAllById(tagIds);
+    verify(categoryRepository).findById(categoryId);
     verify(transactionRepository).save(mockTransaction);
     verify(transactionMapper)
-        .convertCreateDtoToEntity(createDto, mockWallet, mockTags, mockProvider);
+        .convertCreateDtoToEntity(createDto, mockWallet, mockTags, mockProvider, mockCategory);
     verify(transactionMapper).convertToCreateDto(savedTransaction);
   }
 
@@ -110,8 +123,8 @@ public class TransactionServiceCreateUnitTest {
     Long walletId = 999L;
     TransactionCreateDto createDto = new TransactionCreateDto();
     createDto.setWalletId(walletId);
-    createDto.setAmount(new Money().euros(100.00));
-    createDto.setType(TransactionType.DEBIT);
+    createDto.setCategoryId(999L);
+    createDto.setAmount(Money.euros(100.00));
     createDto.setNote("Test transaction");
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.empty());
@@ -129,34 +142,41 @@ public class TransactionServiceCreateUnitTest {
   void shouldCreateTransactionWithoutTags() {
     Long walletId = 1L;
     Long providerId = 1L;
+    final Long categoryId = 1L;
 
     TransactionCreateDto createDto = new TransactionCreateDto();
     createDto.setWalletId(walletId);
-    createDto.setAmount(new Money().euros(50.00));
-    createDto.setType(TransactionType.DEBIT);
+    createDto.setAmount(Money.euros(50.00));
     createDto.setNote("Transaction sans tags");
     createDto.setTagsIds(null);
     createDto.setProviderId(providerId);
+    createDto.setCategoryId(categoryId);
 
     Wallet mockWallet = new Wallet();
     mockWallet.setId(walletId);
-    mockWallet.setAmountBalance(new Money().euros(0));
+    mockWallet.setAmountBalance(Money.euros(0));
 
     Provider mockProvider = new Provider();
     mockProvider.setId(providerId);
     mockProvider.setProviderName("test provider");
+
+    Category mockCategory = new Category();
+    mockCategory.setId(categoryId);
+    mockCategory.setCategoryName("test category");
+    mockCategory.setType(CategoryType.DEBIT);
 
     final Transaction mockTransaction = new Transaction();
     Transaction savedTransaction = new Transaction();
     savedTransaction.setId(1L);
 
     TransactionCreateDto expectedResult = new TransactionCreateDto();
-    expectedResult.setType(TransactionType.DEBIT);
+    expectedResult.setCategoryId(categoryId);
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(mockWallet));
     when(providerRepository.findById(providerId)).thenReturn(Optional.of(mockProvider));
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(mockCategory));
     when(transactionMapper.convertCreateDtoToEntity(
-            createDto, mockWallet, new HashSet<>(), mockProvider))
+            createDto, mockWallet, new HashSet<>(), mockProvider, mockCategory))
         .thenReturn(mockTransaction);
     when(transactionRepository.save(mockTransaction)).thenReturn(savedTransaction);
     when(transactionMapper.convertToCreateDto(savedTransaction)).thenReturn(expectedResult);
@@ -173,29 +193,35 @@ public class TransactionServiceCreateUnitTest {
   void shouldCreateTransactionWithEmptyTagSet() {
     Long walletId = 1L;
     Long providerId = 1L;
+    final Long categoryId = 1L;
 
     TransactionCreateDto createDto = new TransactionCreateDto();
     createDto.setWalletId(walletId);
-    createDto.setAmount(new Money().euros(75.00));
-    createDto.setType(TransactionType.DEBIT);
+    createDto.setAmount(Money.euros(75.00));
     createDto.setTagsIds(new HashSet<>());
     createDto.setProviderId(providerId);
+    createDto.setCategoryId(categoryId);
 
     Wallet mockWallet = new Wallet();
-    mockWallet.setAmountBalance(new Money().euros(10));
+    mockWallet.setAmountBalance(Money.euros(10));
     Provider mockProvider = new Provider();
     mockProvider.setId(providerId);
     mockProvider.setProviderName("test provider");
+    Category mockCategory = new Category();
+    mockCategory.setId(categoryId);
+    mockCategory.setType(CategoryType.DEBIT);
+    mockCategory.setCategoryName("test category");
     final Transaction mockTransaction = new Transaction();
     final Transaction savedTransaction = new Transaction();
     TransactionCreateDto expectedResult = new TransactionCreateDto();
-    expectedResult.setAmount(new Money().euros(10));
+    expectedResult.setAmount(Money.euros(10));
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(mockWallet));
     when(tagRepository.findAllById(new HashSet<>())).thenReturn(List.of());
     when(providerRepository.findById(providerId)).thenReturn(Optional.of(mockProvider));
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(mockCategory));
     when(transactionMapper.convertCreateDtoToEntity(
-            createDto, mockWallet, new HashSet<>(), mockProvider))
+            createDto, mockWallet, new HashSet<>(), mockProvider, mockCategory))
         .thenReturn(mockTransaction);
     when(transactionRepository.save(mockTransaction)).thenReturn(savedTransaction);
     when(transactionMapper.convertToCreateDto(savedTransaction)).thenReturn(expectedResult);
@@ -211,29 +237,38 @@ public class TransactionServiceCreateUnitTest {
   @Test
   void shouldCreateTransactionWithoutProvider() {
     Long walletId = 1L;
+    Long categoryId = 1L;
 
     TransactionCreateDto createDto = new TransactionCreateDto();
     createDto.setWalletId(walletId);
-    createDto.setAmount(new Money().euros(50.00));
-    createDto.setType(TransactionType.DEBIT);
+    createDto.setAmount(Money.euros(50.00));
     createDto.setNote("Transaction sans tags et provider");
     createDto.setTagsIds(new HashSet<>());
     createDto.setProviderId(null);
+    createDto.setCategoryId(categoryId);
 
     Wallet mockWallet = new Wallet();
     mockWallet.setId(walletId);
-    mockWallet.setAmountBalance(new Money().euros(0));
+    mockWallet.setAmountBalance(Money.euros(0));
+
+    Category mockCategory = new Category();
+    mockCategory.setId(categoryId);
+    mockCategory.setCategoryName("Category name");
+    mockCategory.setColor("#F23");
+    mockCategory.setIcon("icon");
+    mockCategory.setType(CategoryType.DEBIT);
 
     final Transaction mockTransaction = new Transaction();
     Transaction savedTransaction = new Transaction();
     savedTransaction.setId(1L);
 
     TransactionCreateDto expectedResult = new TransactionCreateDto();
-    expectedResult.setType(TransactionType.DEBIT);
+    expectedResult.setCategoryId(categoryId);
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(mockWallet));
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(mockCategory));
     when(transactionMapper.convertCreateDtoToEntity(
-            eq(createDto), eq(mockWallet), anySet(), any(Provider.class)))
+            eq(createDto), eq(mockWallet), anySet(), isNull(), eq(mockCategory)))
         .thenReturn(mockTransaction);
     when(transactionRepository.save(mockTransaction)).thenReturn(savedTransaction);
     when(transactionMapper.convertToCreateDto(savedTransaction)).thenReturn(expectedResult);
@@ -242,6 +277,7 @@ public class TransactionServiceCreateUnitTest {
 
     assertNotNull(result);
     verify(walletRepository).findById(walletId);
+    verify(categoryRepository).findById(categoryId);
     verify(transactionRepository).save(mockTransaction);
   }
 }
