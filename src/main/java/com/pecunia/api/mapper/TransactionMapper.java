@@ -51,7 +51,10 @@ public class TransactionMapper {
     transaction.setType(dto.getType());
     transaction.setTags(tags);
     transaction.setWallet(wallet);
-    transaction.setProvider(provider);
+    if (transaction.getProvider() != null) {
+      transaction.setProvider(provider);
+    }
+    transaction.setProvider(null);
 
     return transaction;
   }
