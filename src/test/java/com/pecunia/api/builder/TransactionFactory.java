@@ -1,8 +1,8 @@
 package com.pecunia.api.builder;
 
+import com.pecunia.api.model.Category;
 import com.pecunia.api.model.Money;
 import com.pecunia.api.model.Transaction;
-import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.model.Wallet;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +16,10 @@ public class TransactionFactory {
   public static class TransactionBuilder {
     private Transaction transaction = new Transaction();
     private Wallet wallet;
+    private Category category;
 
-    public TransactionBuilder withType(TransactionType type) {
-      transaction.setType(type);
+    public TransactionBuilder withCategory(Category category) {
+      transaction.setCategory(category);
       return this;
     }
 
