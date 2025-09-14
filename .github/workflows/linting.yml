@@ -1,6 +1,7 @@
 name: CI - Lint with Checkstyle
 
 on:
+  pull_request:
   push:
     branches: [dev, main]
 jobs:
