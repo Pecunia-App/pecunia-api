@@ -2,7 +2,6 @@ package com.pecunia.api.dto.transaction;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pecunia.api.model.Money;
-import com.pecunia.api.model.TransactionType;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -10,8 +9,6 @@ import java.util.Set;
 /** TransactionUpdateDto. */
 public class TransactionUpdateDto {
   private Money amount;
-
-  private TransactionType type;
 
   @Size(min = 0, max = 20, message = "La note peut contenir un maximum de 20 caractères.")
   private String note;
@@ -21,6 +18,7 @@ public class TransactionUpdateDto {
 
   private Set<Long> tagsIds;
   private Long providerId;
+  private Long categoryId;
 
   public Long getProviderId() {
     return providerId;
@@ -54,19 +52,19 @@ public class TransactionUpdateDto {
     this.note = note;
   }
 
-  public TransactionType getType() {
-    return type;
-  }
-
-  public void setType(TransactionType type) {
-    this.type = type;
-  }
-
   public Set<Long> getTagsIds() {
     return tagsIds;
   }
 
   public void setTagsIds(Set<Long> tagsIds) {
     this.tagsIds = tagsIds;
+  }
+
+  public Long getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Long categoryId) {
+    this.categoryId = categoryId;
   }
 }

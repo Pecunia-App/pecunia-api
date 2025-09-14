@@ -74,7 +74,26 @@ public class User extends BaseEntity implements UserDetails {
   private Wallet wallet;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<Category> categories = new HashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<Provider> providers = new HashSet<>();
+
+  public Set<Provider> getProviders() {
+    return providers;
+  }
+
+  public void setProviders(Set<Provider> providers) {
+    this.providers = providers;
+  }
+
+  public Set<Category> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(Set<Category> categories) {
+    this.categories = categories;
+  }
 
   public Wallet getWallet() {
     return wallet;

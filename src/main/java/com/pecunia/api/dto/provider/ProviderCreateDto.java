@@ -9,7 +9,7 @@ public class ProviderCreateDto {
   @Size(min = 1, max = 20, message = "Le nom du fournisseur ne doit pas dépasser 20 caractères.")
   private String providerName;
 
-  @NotNull(message = "Un Wallet est toujours lié à un utilisateur.")
+  @NotNull(message = "Un Fournisseur est toujours lié à un utilisateur.")
   private Long userId;
 
   public Long getUserId() {
