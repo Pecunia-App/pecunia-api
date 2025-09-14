@@ -130,24 +130,24 @@ public class MoneyTest {
   }
 
   @Test
-  public void testSubstractWithSameCurrency() {
+  public void testSubtractWithSameCurrency() {
     Money money1 = Money.euros(15.75);
     Money money2 = Money.euros(5.25);
-    Money result = money1.substract(money2);
+    Money result = money1.subtract(money2);
 
     assertEquals(Money.euros(10.50), result);
     assertEquals("EUR", result.getCurrencyCode());
   }
 
   @Test
-  public void testSubstractWithDifferentCurrencies() {
+  public void testSubtractWithDifferentCurrencies() {
     Money euros = Money.euros(15.75);
     Money dollars = Money.dollars(5.25);
 
     assertThrows(
         CannotAddTwoCurrenciesException.class,
         () -> {
-          euros.substract(dollars);
+          euros.subtract(dollars);
         });
   }
 

@@ -181,7 +181,7 @@ public class Money implements Comparable<Money> {
    * @return le résultat de la soustraction
    * @throws CannotAddTwoCurrenciesException si les devises sont différentes
    */
-  public Money substract(final Money other) {
+  public Money subtract(final Money other) {
     validateSameCurrency(other);
     return newMoney(amount - other.amount);
   }
