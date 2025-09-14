@@ -5,11 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.pecunia.api.dto.transaction.TransactionUpdateDto;
 import com.pecunia.api.model.Money;
+import com.pecunia.api.model.Provider;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.TransactionType;
 import com.pecunia.api.model.User;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.TagRepository;
 import com.pecunia.api.repository.TransactionRepository;
 import com.pecunia.api.repository.UserRepository;
@@ -31,11 +33,13 @@ class TransactionServiceUpdateIntegrationTest {
   @Autowired private WalletRepository walletRepository;
   @Autowired private TagRepository tagRepository;
   @Autowired private UserRepository userRepository;
+  @Autowired private ProviderRepository providerRepository;
 
   private Wallet testWallet;
   private Transaction testTransaction;
   private Tag testTag;
   private User testUser;
+  private Provider providerTest;
 
   @BeforeEach
   void setUp() {
@@ -60,10 +64,16 @@ class TransactionServiceUpdateIntegrationTest {
     testTag.setTagName("TestTag");
     testTag = tagRepository.save(testTag);
 
+    providerTest = new Provider();
+    providerTest.setProviderName("testPRovider");
+    providerTest.setUser(testUser);
+    providerTest = providerRepository.save(providerTest);
+
     testTransaction = new Transaction();
     testTransaction.setAmount(new Money().euros(200.00));
     testTransaction.setType(TransactionType.DEBIT);
     testTransaction.setWallet(testWallet);
+    testTransaction.setProvider(providerTest);
     testTransaction = transactionRepository.save(testTransaction);
 
     testWallet.setAmountBalance(new Money().euros(800.00));
