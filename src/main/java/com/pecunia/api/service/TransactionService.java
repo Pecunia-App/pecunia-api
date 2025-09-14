@@ -102,10 +102,13 @@ public class TransactionService {
         throw new IllegalArgumentException("Certains tags n'existents pas.");
       }
     }
-    Provider provider =
-        providerRepository
-            .findById(transactionCreateDto.getProviderId())
-            .orElseThrow(() -> new IllegalArgumentException("Provider not found"));
+    Provider provider = new Provider();
+    if (transactionCreateDto.getProviderId() != null) {
+      provider =
+          providerRepository
+              .findById(transactionCreateDto.getProviderId())
+              .orElseThrow(() -> new IllegalArgumentException("Provider not found"));
+    }
     Transaction transaction =
         transactionMapper.convertCreateDtoToEntity(transactionCreateDto, wallet, tags, provider);
     Transaction savedTransaction = transactionRepository.save(transaction);
@@ -177,8 +180,9 @@ public class TransactionService {
       }
       transaction.setTags(newTags);
     }
+    Provider newProvider = new Provider();
     if (transactionUpdateDto.getProviderId() != null) {
-      Provider newProvider =
+      newProvider =
           providerRepository
               .findById(transactionUpdateDto.getProviderId())
               .orElseThrow(() -> new IllegalArgumentException("Provider n'existe pas."));
