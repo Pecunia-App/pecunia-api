@@ -8,6 +8,7 @@ import com.pecunia.api.security.HasRole;
 import com.pecunia.api.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,16 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
-  private final TransactionService transactionService;
-
-  /**
-   * Constructor transaction controller.
-   *
-   * @param transactionService {@link TransactionService}
-   */
-  public TransactionController(TransactionService transactionService) {
-    this.transactionService = transactionService;
-  }
+  @Autowired private TransactionService transactionService;
 
   /**
    * Toutes les transactions disponibles, utiles aux admins.
