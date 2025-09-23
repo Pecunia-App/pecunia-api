@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,29 +28,11 @@ import org.springframework.stereotype.Service;
 /** TransactionService. */
 @Service
 public class TransactionService {
-  private final TransactionRepository transactionRepository;
-  private final TransactionMapper transactionMapper;
-  private final WalletRepository walletRepository;
-  private final TagRepository tagRepository;
-  private final ProviderRepository providerRepository;
-
-  /**
-   * Repository constructor.
-   *
-   * @param transactionRepository params
-   */
-  public TransactionService(
-      TransactionRepository transactionRepository,
-      TransactionMapper transactionMapper,
-      WalletRepository walletRepository,
-      TagRepository tagRepository,
-      ProviderRepository providerRepository) {
-    this.transactionRepository = transactionRepository;
-    this.transactionMapper = transactionMapper;
-    this.walletRepository = walletRepository;
-    this.tagRepository = tagRepository;
-    this.providerRepository = providerRepository;
-  }
+  @Autowired private TransactionRepository transactionRepository;
+  @Autowired private TransactionMapper transactionMapper;
+  @Autowired private WalletRepository walletRepository;
+  @Autowired private TagRepository tagRepository;
+  @Autowired private ProviderRepository providerRepository;
 
   /**
    * Methode renvoyant toutes les transactions disponibles, utiles aux admins.

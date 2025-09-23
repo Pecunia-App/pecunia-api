@@ -10,6 +10,7 @@ import com.pecunia.api.service.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /** WalletController. */
@@ -35,7 +37,7 @@ public class WalletController {
   @Autowired private WalletService walletService;
 
   /**
-   * Methode renvoyant tous les wallets disponbles, utiles aux admins.
+   * Methode renvoyant tous les wallets disponibles, utiles aux admins.
    *
    * @return une liste de wallet
    */
@@ -62,6 +64,23 @@ public class WalletController {
   public ResponseEntity<Page<TransactionDto>> getAllTransactionsByWallet(
       @PathVariable Long id, Pageable pageable) {
     Page<TransactionDto> transactions = walletService.getTransactionsWallet(id, pageable);
+    return transactions.isEmpty()
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(transactions);
+  }
+
+  @GetMapping("/{id}/transactions/by-date")
+  @Operation(
+      summary = "Get transactions from a walletId betweend two dates.",
+      description = "Role Admin require or login with correct user id.")
+  @CanAccessWallet
+  public ResponseEntity<Page<TransactionDto>> getTransactionsBetweenTwoDatesAndByWalletId(
+      @PathVariable Long id,
+      Pageable pageable,
+      @RequestParam LocalDateTime from,
+      @RequestParam LocalDateTime to) {
+    Page<TransactionDto> transactions =
+        walletService.getTransactionsBetweenTwoDatesByUserId(id, pageable, from, to);
     return transactions.isEmpty()
         ? ResponseEntity.noContent().build()
         : ResponseEntity.ok(transactions);
