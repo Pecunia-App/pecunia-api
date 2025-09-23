@@ -14,9 +14,11 @@ import com.pecunia.api.repository.TransactionRepository;
 import com.pecunia.api.repository.UserRepository;
 import com.pecunia.api.repository.WalletRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,30 +27,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class WalletService {
 
-  private final WalletRepository walletRepository;
-  private final WalletMapper walletMapper;
-  private final UserRepository userRepository;
-  private final TransactionRepository transactionRepository;
-  private final TransactionMapper transactionMapper;
-
-  /**
-   * Constructor of walletService class.
-   *
-   * @param walletRepository wallet repository
-   * @param walletMapper wallet mapper
-   */
-  public WalletService(
-      WalletRepository walletRepository,
-      WalletMapper walletMapper,
-      UserRepository userRepository,
-      TransactionRepository transactionRepository,
-      TransactionMapper transactionMapper) {
-    this.walletRepository = walletRepository;
-    this.walletMapper = walletMapper;
-    this.userRepository = userRepository;
-    this.transactionRepository = transactionRepository;
-    this.transactionMapper = transactionMapper;
-  }
+  @Autowired private WalletRepository walletRepository;
+  @Autowired private WalletMapper walletMapper;
+  @Autowired private UserRepository userRepository;
+  @Autowired private TransactionRepository transactionRepository;
+  @Autowired private TransactionMapper transactionMapper;
 
   /**
    * List all Wallet for Admin only.
@@ -69,11 +52,23 @@ public class WalletService {
    */
   public Page<TransactionDto> getTransactionsWallet(
       Long walletId, @ParameterObject Pageable pageable) {
+    isWalletExists(walletId);
+    Page<Transaction> transactions = transactionRepository.findByWalletId(walletId, pageable);
+
+    return transactions.map(transactionMapper::convertToDto);
+  }
+
+  private void isWalletExists(Long walletId) {
     if (!walletRepository.existsById(walletId)) {
       throw new EntityNotFoundException("wallet non trouvé avec l'ID: " + walletId);
     }
-    Page<Transaction> transactions = transactionRepository.findByWalletId(walletId, pageable);
+  }
 
+  public Page<TransactionDto> getTransactionsBetweenTwoDatesByUserId(
+      Long walletId, Pageable pageable, LocalDateTime from, LocalDateTime to) {
+    isWalletExists(walletId);
+    Page<Transaction> transactions =
+        transactionRepository.findByWalletIdAndCreatedAtBetween(walletId, pageable, from, to);
     return transactions.map(transactionMapper::convertToDto);
   }
 
