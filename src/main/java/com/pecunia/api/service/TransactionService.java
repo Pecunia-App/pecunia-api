@@ -13,6 +13,7 @@ import com.pecunia.api.model.Provider;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.Wallet;
+import com.pecunia.api.repository.CategoryRepository;
 import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.TagRepository;
 import com.pecunia.api.repository.TransactionRepository;
@@ -35,6 +36,7 @@ public class TransactionService {
   @Autowired private WalletRepository walletRepository;
   @Autowired private TagRepository tagRepository;
   @Autowired private ProviderRepository providerRepository;
+  @Autowired private CategoryRepository categoryRepository;
 
   /**
    * Methode renvoyant toutes les transactions disponibles, utiles aux admins.

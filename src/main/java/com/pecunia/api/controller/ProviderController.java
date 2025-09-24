@@ -81,11 +81,11 @@ public class ProviderController {
     return providers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(providers);
   }
 
-  @GetMapping("/{providerId}")
+  @GetMapping("/{id}")
   @Operation()
   @CanAccessProvider
-  public ResponseEntity<ProviderDto> getProviderById(@PathVariable Long providerId) {
-    ProviderDto provider = providerService.getProviderById(providerId);
+  public ResponseEntity<ProviderDto> getProviderById(@PathVariable Long id) {
+    ProviderDto provider = providerService.getProviderById(id);
     return provider == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(provider);
   }
 
@@ -111,26 +111,26 @@ public class ProviderController {
    * @param provider body à update
    * @return 200 ou 404
    */
-  @PutMapping("/{providerId}")
+  @PutMapping("/{id}")
   @Operation(
       summary = "Update a specific Provider by Id",
       description = "Role Admin require or login with correct user id.")
   @CanAccessProvider
   public ResponseEntity<ProviderUpdateDto> updateProvider(
-      @PathVariable Long providerId, @Valid @RequestBody ProviderUpdateDto provider) {
-    ProviderUpdateDto updatedProvider = providerService.update(providerId, provider);
+      @PathVariable Long id, @Valid @RequestBody ProviderUpdateDto provider) {
+    ProviderUpdateDto updatedProvider = providerService.update(id, provider);
     return updatedProvider == null
         ? ResponseEntity.notFound().build()
         : ResponseEntity.ok(updatedProvider);
   }
 
-  @DeleteMapping("/{providerId}")
+  @DeleteMapping("/{id}")
   @Operation(
       summary = "Delete a specific Provider by Id",
       description = "Role admin require or login with correct user id.")
   @CanAccessProvider
-  public ResponseEntity<Void> deleteProvider(@PathVariable Long providerId) {
-    return providerService.delete(providerId)
+  public ResponseEntity<Void> deleteProvider(@PathVariable Long id) {
+    return providerService.delete(id)
         ? ResponseEntity.noContent().build()
         : ResponseEntity.notFound().build();
   }
