@@ -2,6 +2,7 @@ package com.pecunia.api.controller;
 
 import com.pecunia.api.dto.UserDTO;
 import com.pecunia.api.dto.UserUpdateDTO;
+import com.pecunia.api.model.User;
 import com.pecunia.api.security.HasRole;
 import com.pecunia.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @Tag(name = "User controller", description = "Handle READ UPDATE and DELETE users")
@@ -48,6 +50,17 @@ public class UserController {
     return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
   }
 
+  @GetMapping("/me")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
+    User user = (User) authentication.getPrincipal();
+    Long userId = user.getId();
+
+    UserDTO userDTO = userService.getUserById(userId);
+    return ResponseEntity.ok(userDTO);
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @Operation(summary = "Get a specific user by firstname", description = "Role admin require.")
   @GetMapping("/search-firstname")
   @HasRole("ADMIN")
@@ -73,6 +86,17 @@ public class UserController {
       @PathVariable Long id, @Valid @RequestBody UserUpdateDTO userDetails) {
     UserDTO updatedUser = userService.updateUser(id, userDetails);
     return updatedUser == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(updatedUser);
+  }
+
+  @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
+  @PutMapping("/{id}/password")
+  public ResponseEntity<Void> updatePassword(
+      @PathVariable Long id, @Valid @RequestBody com.pecunia.api.dto.PasswordUpdateDTO body) {
+
+    // Délègue au service: il chargera l’utilisateur, encodera avec BCrypt, et sauvegardera
+    userService.updatePassword(id, body.getNewPassword());
+
+    return ResponseEntity.noContent().build(); // 204 si OK
   }
 
   @Operation(
