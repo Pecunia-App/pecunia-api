@@ -11,16 +11,14 @@ import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.Wallet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /** TransactionMapper. */
 @Component
 public class TransactionMapper {
-  private final TagMapper tagMapper;
-
-  public TransactionMapper(TagMapper tagMapper) {
-    this.tagMapper = tagMapper;
-  }
+  @Autowired private ProviderMapper providerMapper;
+  @Autowired private TagMapper tagMapper;
 
   /**
    * @param transaction
@@ -40,7 +38,7 @@ public class TransactionMapper {
       dto.setTags(tagDtos);
     }
     if (transaction.getProvider() != null) {
-      dto.setProvider(transaction.getProvider());
+      dto.setProvider(providerMapper.convertToDto(transaction.getProvider()));
     }
     return dto;
   }
