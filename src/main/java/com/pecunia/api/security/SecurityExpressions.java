@@ -35,8 +35,8 @@ public class SecurityExpressions {
   /**
    * Méthode pour voir si l'utilisateur peut accéder à une ressource.
    *
-   * @param resourceId id of wallet or transaction
-   * @param resourceType wallet or transaction
+   * @param resourceId id of wallet, provider, category or, transaction
+   * @param resourceType wallet, provider, category, transaction
    * @return boolean
    */
   public boolean isOwner(Long resourceId, String resourceType) {

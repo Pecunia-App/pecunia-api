@@ -68,7 +68,7 @@ public class CategoryController {
    * @return noContent or OK
    */
   @GetMapping("/users/{userId}")
-  @CanAccessCategory
+  @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
   public ResponseEntity<Page<CategoryDto>> getAllCategoriesByUser(
       @PathVariable Long userId, Pageable pageable) {
     Page<CategoryDto> categories = categoryService.getUserCategories(userId, pageable);
@@ -98,26 +98,26 @@ public class CategoryController {
    * @param dto body à update
    * @return 200 ou 404
    */
-  @PutMapping("/{categoryId}")
+  @PutMapping("/{id}")
   @Operation(
       summary = "Update a specific Category by Id",
       description = "Role Admin require or login with correct user id.")
   @CanAccessCategory
   public ResponseEntity<CategoryUpdateDto> updateCategory(
-      @PathVariable Long categoryId, @Valid @RequestBody CategoryUpdateDto dto) {
-    CategoryUpdateDto updatedCategory = categoryService.update(categoryId, dto);
+      @PathVariable Long id, @Valid @RequestBody CategoryUpdateDto dto) {
+    CategoryUpdateDto updatedCategory = categoryService.update(id, dto);
     return updatedCategory == null
         ? ResponseEntity.notFound().build()
         : ResponseEntity.ok(updatedCategory);
   }
 
-  @DeleteMapping("/{categoryId}")
+  @DeleteMapping("/{id}")
   @Operation(
       summary = "Delete a specific Category by Id",
       description = "Role admin require or login with correct user id.")
   @CanAccessCategory
-  public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-    return categoryService.delete(categoryId)
+  public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    return categoryService.delete(id)
         ? ResponseEntity.noContent().build()
         : ResponseEntity.notFound().build();
   }
