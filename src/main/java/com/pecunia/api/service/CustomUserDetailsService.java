@@ -1,5 +1,6 @@
 package com.pecunia.api.service;
 
+import com.pecunia.api.model.User;
 import com.pecunia.api.repository.UserRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,9 +20,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    return userRepository
-        .findByEmail(email)
-        .orElseThrow(
-            () -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email : " + email));
+    User user =
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(
+                        "Utilisateur non trouvé avec l'email : " + email));
+    return user;
   }
 }

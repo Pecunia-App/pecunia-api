@@ -8,6 +8,7 @@ import com.pecunia.api.repository.UserRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -86,5 +87,30 @@ public class UserService {
 
     userRepository.delete(user);
     return true;
+  }
+
+  /**
+   * Met à jour le mot de passe d'un utilisateur.
+   *
+   * @param userId identifiant utilisateur
+   * @param newRawPassword mot de passe en clair reçu du DTO
+   */
+  @org.springframework.transaction.annotation.Transactional
+  public void updatePassword(Long userId, String newRawPassword) {
+    if (newRawPassword == null || newRawPassword.isBlank()) {
+      throw new IllegalArgumentException("Le nouveau mot de passe est obligatoire.");
+    }
+
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
+
+    String encoded = passwordEncoder.encode(newRawPassword);
+    user.setPassword(encoded);
+
+    userRepository.save(user);
+
+    System.out.println("✅ Mot de passe mis à jour pour l'utilisateur " + userId);
   }
 }
