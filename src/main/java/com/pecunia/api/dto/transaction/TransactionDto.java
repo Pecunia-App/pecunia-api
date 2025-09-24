@@ -1,9 +1,9 @@
 package com.pecunia.api.dto.transaction;
 
+import com.pecunia.api.dto.provider.ProviderDto;
 import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.model.CategoryType;
 import com.pecunia.api.model.Money;
-import com.pecunia.api.model.Provider;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public class TransactionDto {
   private String note;
   private Money amount;
   private Set<TagDto> tags;
-  private Provider provider;
+  private ProviderDto provider;
 
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
@@ -75,11 +75,11 @@ public class TransactionDto {
     this.tags = tags;
   }
 
-  public Provider getProvider() {
+  public ProviderDto getProvider() {
     return provider;
   }
 
-  public void setProvider(Provider provider) {
+  public void setProvider(ProviderDto provider) {
     this.provider = provider;
   }
 }
