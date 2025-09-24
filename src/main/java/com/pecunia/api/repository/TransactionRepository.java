@@ -21,6 +21,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
   Page<Transaction> findByWalletIdAndCreatedAtBetween(
       Long walletId, Pageable pageable, LocalDateTime from, LocalDateTime to);
+
   List<Transaction> findByCategoryId(Long categoryId);
 
   boolean existsByIdAndWalletUserId(Long id, Long walletUserId);
