@@ -95,17 +95,10 @@ public class UserController {
   @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
   @PutMapping("/{id}/password")
   public ResponseEntity<Void> updatePassword(
-      @PathVariable Long id,
-      @Valid @org.springframework.web.bind.annotation.RequestBody PasswordUpdateDTO body) {
+      @PathVariable Long id, @Valid @RequestBody PasswordUpdateDTO body) {
 
-    try {
-      userService.updatePassword(id, body.getNewPassword());
-      return ResponseEntity.noContent().build();
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build();
-    } catch (Exception e) {
-      return ResponseEntity.status(500).build();
-    }
+    userService.updatePassword(id, body.getNewPassword());
+    return ResponseEntity.noContent().build();
   }
 
   @Operation(

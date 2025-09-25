@@ -110,9 +110,12 @@ public class UserService {
             .findById(userId)
             .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
 
-    String encoded = passwordEncoder.encode(newRawPassword);
-    user.setPassword(encoded);
+    if (passwordEncoder.matches(newRawPassword, user.getPassword())) {
+      throw new IllegalArgumentException(
+          "Le nouveau mot de passe doit être différent de l'ancien.");
+    }
 
+    user.setPassword(passwordEncoder.encode(newRawPassword));
     userRepository.save(user);
 
     logger.info("✅ Mot de passe mis à jour pour l'utilisateur " + userId);
