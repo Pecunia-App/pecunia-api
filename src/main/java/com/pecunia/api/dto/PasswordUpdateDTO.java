@@ -10,10 +10,10 @@ public class PasswordUpdateDTO {
   @JsonProperty("newPassword")
   @NotBlank(message = "Le nouveau mot de passe est obligatoire.")
   @Pattern(
-          regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+!?=])(?=\\S+$).{12,}$",
-          message =
-                  "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre et un"
-                          + " caractère spécial.")
+      regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+!?=])(?=\\S+$).{12,}$",
+      message =
+          "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre et un"
+              + " caractère spécial.")
   private String newPassword;
 
   @JsonProperty("confirmNewPassword")

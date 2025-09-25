@@ -112,7 +112,7 @@ public class GlobalExceptionHandler {
 
     return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
   }
-  
+
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
     Map<String, Object> body = new LinkedHashMap<>();
