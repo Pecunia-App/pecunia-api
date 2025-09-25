@@ -5,9 +5,12 @@ import com.pecunia.api.dto.UserUpdateDTO;
 import com.pecunia.api.mapper.UserMapper;
 import com.pecunia.api.model.User;
 import com.pecunia.api.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+  private static final Logger logger = LoggerFactory.getLogger(UserService.class);
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final UserMapper userMapper;
@@ -95,7 +99,7 @@ public class UserService {
    * @param userId identifiant utilisateur
    * @param newRawPassword mot de passe en clair reçu du DTO
    */
-  @org.springframework.transaction.annotation.Transactional
+  @Transactional
   public void updatePassword(Long userId, String newRawPassword) {
     if (newRawPassword == null || newRawPassword.isBlank()) {
       throw new IllegalArgumentException("Le nouveau mot de passe est obligatoire.");
@@ -111,6 +115,6 @@ public class UserService {
 
     userRepository.save(user);
 
-    System.out.println("✅ Mot de passe mis à jour pour l'utilisateur " + userId);
+    logger.info("✅ Mot de passe mis à jour pour l'utilisateur " + userId);
   }
 }
