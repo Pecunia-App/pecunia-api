@@ -21,6 +21,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Generate .env.production for frontend
+        run: |
+          echo "NG_APP_ENV=${{ secrets.NG_APP_ENV_PROD }}" > .env.production
+          echo "NG_APP_API_URL=${{ secrets.NG_APP_API_URL_PROD }}" > .env.production
+          cat .env.production
       - name: Build and Push Docker Image
         run: |
           docker build -t txrigxn/pecunia-api:latest . || exit 1
@@ -37,6 +42,7 @@ jobs:
           echo "$SSHKEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          scp -i ~/.ssh/id_ed25519 .env.production ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/pecunia/pecunia/.env.production
           ssh -i ~/.ssh/id_ed25519 ${VPS_USER}@${VPS_HOST} "/home/pecunia/pecunia/deploy.sh"
       - name: cleanup
         run: rm -rf ~/.ssh
