@@ -3,13 +3,17 @@ package com.pecunia.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 public class PasswordUpdateDTO {
 
   @JsonProperty("newPassword")
   @NotBlank(message = "Le nouveau mot de passe est obligatoire.")
-  @Size(min = 12, max = 128, message = "Le mot de passe doit contenir entre 12 et 128 caractères.")
+  @Pattern(
+          regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+!?=])(?=\\S+$).{12,}$",
+          message =
+                  "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre et un"
+                          + " caractère spécial.")
   private String newPassword;
 
   @JsonProperty("confirmNewPassword")
