@@ -16,6 +16,7 @@ public class UserUpdateDTO {
 
   // @NotNull(message = "La photo est obligatoire.")
   private ProfilePicture profilePicture;
+
   @Email(message = "Email invalide.")
   @NotBlank(message = "L'email est obligatoire.")
   private String email;
