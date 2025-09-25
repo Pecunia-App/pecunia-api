@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -91,9 +92,27 @@ public class GlobalExceptionHandler {
     body.put("error", "Format invalide");
     body.put("message", ex.getMessage());
 
+    String errorCode = "VALIDATION_ERROR";
+    String msg = ex.getMessage() != null ? ex.getMessage() : "";
+    if (msg.contains("doit être différent")) {
+      errorCode = "PASSWORD_SAME_AS_OLD";
+    }
+    body.put("errorCode", errorCode);
+
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(UsernameNotFoundException.class)
+  public ResponseEntity<Object> handleUserNotFound(UsernameNotFoundException ex) {
+    Map<String, Object> body = new LinkedHashMap<>();
+    body.put("status", HttpStatus.NOT_FOUND.value());
+    body.put("error", "Utilisateur introuvable");
+    body.put("message", ex.getMessage());
+    body.put("errorCode", "USER_NOT_FOUND");
+
+    return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+  }
+  
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
     Map<String, Object> body = new LinkedHashMap<>();
