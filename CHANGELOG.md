@@ -1,3 +1,31 @@
+## 0.5.0 (2025-09-26)
+
+### BREAKING CHANGE
+
+- Les expressions de sécurité de différentes méthodes dans différent
+Controller ont été corrigés.
+- Replace TransactionType column with type From Category
+entity
+- - ajout d'une entité Provider
+- add provider to transactions dtos
+
+### Feat
+
+- **passwordUpdateDTO,-modify-userService**: to modify user information (test with front)
+- **category**: CRUD Category entity
+- **wallet-transaction**: add endpoint to retrieve pageable transactions between createdAt dates
+- **provider**: create entity and dependencies
+
+### Fix
+
+- **PasswordUpdateDTO,-UserController**: error message same password + regex
+- **modify-UserController,-PasswordUpdateDTO-and-UserService**: corrections after repo comments and bug updatePassword
+- **security-expressions**: fix security expressions for some methods to have good behavior
+
+### Refactor
+
+- **transaction**: fix circulair references with TransactionDto with Provider Entity
+
 ## 0.4.0 (2025-08-29)
 
 ### BREAKING CHANGE
