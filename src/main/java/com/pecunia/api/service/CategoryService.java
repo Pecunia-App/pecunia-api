@@ -23,6 +23,24 @@ public class CategoryService {
   @Autowired CategoryMapper categoryMapper;
   @Autowired TransactionService transactionService;
 
+  private static void validateCategoryCreation(CategoryCreateDto dto) {
+    if (dto.getCategoryName() == null) {
+      throw new IllegalArgumentException("Category name cannot be null.");
+    }
+    if (dto.getType() == null) {
+      throw new IllegalArgumentException("CategoryType cannot be null.");
+    }
+    if (dto.getIsGlobal() == null) {
+      throw new IllegalArgumentException("isGLobal cannot be null.");
+    }
+    if (dto.getColor() == null) {
+      throw new IllegalArgumentException("Category color cannot be null.");
+    }
+    if (dto.getUserId() == null) {
+      throw new IllegalArgumentException("User id cannot be null");
+    }
+  }
+
   public Page<CategoryDto> getAll(@ParameterObject Pageable pageable) {
     Page<Category> categories = categoryRepository.findAll(pageable);
     return categories.map(categoryMapper::convertToDto);
@@ -89,24 +107,6 @@ public class CategoryService {
     return true;
   }
 
-  private static void validateCategoryCreation(CategoryCreateDto dto) {
-    if (dto.getCategoryName() == null) {
-      throw new IllegalArgumentException("Category name cannot be null.");
-    }
-    if (dto.getType() == null) {
-      throw new IllegalArgumentException("CategoryType cannot be null.");
-    }
-    if (dto.getIsGlobal() == null) {
-      throw new IllegalArgumentException("isGLobal cannot be null.");
-    }
-    if (dto.getColor() == null) {
-      throw new IllegalArgumentException("Category color cannot be null.");
-    }
-    if (dto.getUserId() == null) {
-      throw new IllegalArgumentException("User id cannot be null");
-    }
-  }
-
   private Category getCategoryByIdOrThrow(Long categoryId) {
     return categoryRepository
         .findById(categoryId)
@@ -114,5 +114,10 @@ public class CategoryService {
             () ->
                 new ResourceNotFoundException(
                     "la categorie avec l'id" + categoryId + "n'a pas été trouvée."));
+  }
+
+  public Page<CategoryDto> getGlobalCategories(Pageable pageable) {
+    Page<Category> categories = categoryRepository.findByIsGlobalTrue(pageable);
+    return categories.map(categoryMapper::convertToDto);
   }
 }
