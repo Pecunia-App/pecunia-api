@@ -1,5 +1,6 @@
 package com.pecunia.api.mapper;
 
+import com.pecunia.api.dto.category.CategoryDto;
 import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.dto.transaction.TransactionCreateDto;
 import com.pecunia.api.dto.transaction.TransactionDto;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
   @Autowired private ProviderMapper providerMapper;
   @Autowired private TagMapper tagMapper;
+  @Autowired private CategoryMapper categoryMapper;
 
   /**
    * @param transaction
@@ -39,6 +41,10 @@ public class TransactionMapper {
     }
     if (transaction.getProvider() != null) {
       dto.setProvider(providerMapper.convertToDto(transaction.getProvider()));
+    }
+    if (transaction.getCategory() != null) {
+      CategoryDto categoryDto = categoryMapper.convertToDto(transaction.getCategory());
+      dto.setCategory(categoryDto);
     }
     return dto;
   }

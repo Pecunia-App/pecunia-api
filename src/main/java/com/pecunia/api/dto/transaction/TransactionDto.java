@@ -1,5 +1,6 @@
 package com.pecunia.api.dto.transaction;
 
+import com.pecunia.api.dto.category.CategoryDto;
 import com.pecunia.api.dto.provider.ProviderDto;
 import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.model.CategoryType;
@@ -15,6 +16,7 @@ public class TransactionDto {
   private Money amount;
   private Set<TagDto> tags;
   private ProviderDto provider;
+   private CategoryDto category;
 
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
@@ -81,5 +83,12 @@ public class TransactionDto {
 
   public void setProvider(ProviderDto provider) {
     this.provider = provider;
+  }
+
+  public CategoryDto getCategory() {
+    return category;
+  }
+  public void setCategory(CategoryDto category) {
+    this.category = category;
   }
 }
