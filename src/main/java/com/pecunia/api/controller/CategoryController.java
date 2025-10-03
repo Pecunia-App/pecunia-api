@@ -121,4 +121,13 @@ public class CategoryController {
         ? ResponseEntity.noContent().build()
         : ResponseEntity.notFound().build();
   }
+
+  @GetMapping("/global")
+  @Operation(summary = "Retourne toutes les catégories globales", description = "Accessible à tous")
+  public ResponseEntity<Page<CategoryDto>> getGlobalCategories(Pageable pageable) {
+    Page<CategoryDto> categories = categoryService.getGlobalCategories(pageable);
+    return categories.isEmpty()
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(categories);
+  }
 }

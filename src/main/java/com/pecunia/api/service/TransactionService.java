@@ -38,6 +38,16 @@ public class TransactionService {
   @Autowired private ProviderRepository providerRepository;
   @Autowired private CategoryRepository categoryRepository;
 
+  private static void validateTransaction(TransactionCreateDto transactionCreateDto) {
+    if (transactionCreateDto.getWalletId() == null) {
+      throw new IllegalArgumentException("WalletId cannot be null.");
+    }
+
+    if (transactionCreateDto.getCategoryId() == null) {
+      throw new IllegalArgumentException("categoryId cannot be null.");
+    }
+  }
+
   /**
    * Methode renvoyant toutes les transactions disponibles, utiles aux admins.
    *
@@ -58,16 +68,6 @@ public class TransactionService {
   public TransactionDto getTransactionById(Long transactionId) {
     Transaction transaction = getTransactionByIdOrThrow(transactionId);
     return transaction != null ? transactionMapper.convertToDto(transaction) : null;
-  }
-
-  private static void validateTransaction(TransactionCreateDto transactionCreateDto) {
-    if (transactionCreateDto.getWalletId() == null) {
-      throw new IllegalArgumentException("WalletId cannot be null.");
-    }
-
-    if (transactionCreateDto.getCategoryId() == null) {
-      throw new IllegalArgumentException("categoryId cannot be null.");
-    }
   }
 
   /**
@@ -289,4 +289,10 @@ public class TransactionService {
       updateWalletBalance(wallet, amount, newType);
     }
   }
+
+  public Page<TransactionDto> getAllByUserId(Long userId, Pageable pageable) {
+  Page<Transaction> transactions = transactionRepository.findByWalletUserId(userId, pageable);
+  return transactions.map(transactionMapper::convertToDto);
+}
+
 }
