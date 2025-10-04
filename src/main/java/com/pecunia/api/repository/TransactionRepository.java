@@ -25,6 +25,4 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
   List<Transaction> findByCategoryId(Long categoryId);
 
   boolean existsByIdAndWalletUserId(Long id, Long walletUserId);
-
-  Page<Transaction> findByWalletUserId(Long userId, Pageable pageable);
 }

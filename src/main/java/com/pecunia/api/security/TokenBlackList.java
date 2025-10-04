@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenBlackList {
 
-  private Set<String> blacklist = new HashSet<>();
+  private final Set<String> blacklist = new HashSet<>();
 
   public void addToBlacklist(String token) {
     blacklist.add(token);

@@ -26,6 +26,7 @@ public class CategoryDto {
 
   @NotNull(message = "is_Global cannot be null")
   private boolean isGlobal;
+
   private Long userId;
 
   public Long getId() {

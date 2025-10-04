@@ -114,17 +114,4 @@ public class TransactionController {
         ? ResponseEntity.noContent().build()
         : ResponseEntity.notFound().build();
   }
-
-  @GetMapping("/users/{userId}")
-  @Operation(
-      summary = "Retourne toutes les transactions d'un utilisateur",
-      description = "Accessible à l'utilisateur ou admin")
-  @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
-  public ResponseEntity<Page<TransactionDto>> getAllTransactionsByUser(
-      @PathVariable Long userId, Pageable pageable) {
-    Page<TransactionDto> transactions = transactionService.getAllByUserId(userId, pageable);
-    return transactions.isEmpty()
-        ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(transactions);
-  }
 }

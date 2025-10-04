@@ -289,10 +289,4 @@ public class TransactionService {
       updateWalletBalance(wallet, amount, newType);
     }
   }
-
-  public Page<TransactionDto> getAllByUserId(Long userId, Pageable pageable) {
-  Page<Transaction> transactions = transactionRepository.findByWalletUserId(userId, pageable);
-  return transactions.map(transactionMapper::convertToDto);
-}
-
 }
