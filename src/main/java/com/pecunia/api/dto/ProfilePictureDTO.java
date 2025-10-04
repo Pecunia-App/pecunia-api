@@ -13,19 +13,19 @@ public class ProfilePictureDTO {
     this.id = id;
   }
 
-  public void setUserId(Long userId) {
-    this.userId = userId;
-  }
-
   public Long getUserId() {
     return userId;
   }
 
-  public void setPicture(String picture) {
-    this.picture = picture;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
   public String getPicture() {
     return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 }
