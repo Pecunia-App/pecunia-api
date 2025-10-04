@@ -33,15 +33,15 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final CustomUserDetailsService customUserDetailsService;
 
+  @Value("${cors.allowed-origin}")
+  private String allowedOrigin;
+
   public SecurityConfig(
       JwtAuthenticationFilter jwtAuthenticationFilter,
       CustomUserDetailsService customUserDetailsService) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.customUserDetailsService = customUserDetailsService;
   }
-
-  @Value("${cors.allowed-origin}")
-  private String allowedOrigin;
 
   @Bean
   static AnnotationTemplateExpressionDefaults templateExpressionDefaults() {

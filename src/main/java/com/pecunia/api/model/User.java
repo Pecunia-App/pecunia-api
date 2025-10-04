@@ -13,6 +13,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "`user`")
 public class User extends BaseEntity implements UserDetails {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String firstname;
+  private String lastname;
+  private String email;
+  private String password;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "profile_picture_id", unique = true)
+  private ProfilePicture profilePicture;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  private Set<String> roles = new HashSet<>();
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Wallet wallet;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<Category> categories = new HashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<Provider> providers = new HashSet<>();
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
@@ -50,34 +75,6 @@ public class User extends BaseEntity implements UserDetails {
   public boolean isEnabled() {
     return true;
   }
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  private String firstname;
-
-  private String lastname;
-
-  private String email;
-
-  private String password;
-
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "profile_picture_id", unique = true)
-  private ProfilePicture profilePicture;
-
-  @ElementCollection(fetch = FetchType.EAGER)
-  private Set<String> roles = new HashSet<>();
-
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private Wallet wallet;
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Set<Category> categories = new HashSet<>();
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Set<Provider> providers = new HashSet<>();
 
   public Set<Provider> getProviders() {
     return providers;

@@ -9,5 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
   Page<Category> findByUserId(Long userId, Pageable pageable);
 
+  Page<Category> findByIsGlobalTrue(Pageable pageable);
+
   boolean existsByIdAndUserId(Long id, Long userId);
 }

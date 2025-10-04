@@ -30,6 +30,12 @@ public class ProviderService {
     this.userRepository = userRepository;
   }
 
+  private static void validateProviderCreation(ProviderCreateDto providerRequestDto) {
+    if (providerRequestDto.getProviderName() == null) {
+      throw new IllegalArgumentException("Provider name cannot be null.");
+    }
+  }
+
   public Page<ProviderDto> getAll(@ParameterObject Pageable pageable) {
     Page<Provider> providers = providerRepository.findAll(pageable);
     return providers.map(providerMapper::convertToDto);
@@ -94,11 +100,5 @@ public class ProviderService {
             () ->
                 new ResourceNotFoundException(
                     "Le provider avec l'id " + providerId + " n'a pas été trouvé."));
-  }
-
-  private static void validateProviderCreation(ProviderCreateDto providerRequestDto) {
-    if (providerRequestDto.getProviderName() == null) {
-      throw new IllegalArgumentException("Provider name cannot be null.");
-    }
   }
 }

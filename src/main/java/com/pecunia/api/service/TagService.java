@@ -24,6 +24,12 @@ public class TagService {
     this.tagMapper = tagMapper;
   }
 
+  private static void validateTagCreation(TagRequestDto tagCreateDto) {
+    if (tagCreateDto.getTagName() == null) {
+      throw new IllegalArgumentException("Tag name cannot be null.");
+    }
+  }
+
   /**
    * Pagination of all tags, Useful for Admin.
    *
@@ -94,12 +100,6 @@ public class TagService {
     tag.setUpdatedAt(LocalDateTime.now());
     Tag updatedTag = tagRepository.save(tag);
     return tagMapper.convertToCreateDto(updatedTag);
-  }
-
-  private static void validateTagCreation(TagRequestDto tagCreateDto) {
-    if (tagCreateDto.getTagName() == null) {
-      throw new IllegalArgumentException("Tag name cannot be null.");
-    }
   }
 
   /**

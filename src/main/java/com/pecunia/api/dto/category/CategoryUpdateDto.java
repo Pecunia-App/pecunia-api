@@ -11,8 +11,10 @@ public class CategoryUpdateDto {
   private String icon;
 
   @Pattern(
-      regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
-      message = "La couleur doit être au format hexadécimal (ex: #FF5733 ou #F53)")
+      regexp =
+          "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$|^background-badge-(blue|green|grey|orange|pink|red|violet|yellow)-(low|medium)$|^background-badge-grey$",
+      message =
+          "La couleur doit être au format hexadécimal (ex: #FF5733) ou un token valide (ex: background-badge-blue-low)")
   private String color;
 
   private Boolean isGlobal;

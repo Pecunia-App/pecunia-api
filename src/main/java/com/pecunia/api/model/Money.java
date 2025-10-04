@@ -13,29 +13,7 @@ public class Money implements Comparable<Money> {
   // Tableau pour gérer les facteurs de conversion pour chaque devise (par exemple, 100 pour l'euro,
   // 100 pour le dollar)
   private static final int[] cents = new int[] {1, 10, 100, 1000};
-
-  /**
-   * Crée une instance de <code>Money</code> représentant un montant en euros (EUR).
-   *
-   * @param amount le montant en euros
-   * @return une nouvelle instance de <code>Money</code> avec la devise EUR
-   */
-  public static Money euros(final double amount) {
-    return new Money(amount, Currency.getInstance("EUR"));
-  }
-
-  /**
-   * Crée une instance de <code>Money</code> représentant un montant en dollars américains (USD).
-   *
-   * @param amount le montant en dollars
-   * @return une nouvelle instance de <code>Money</code> avec la devise USD
-   */
-  public static Money dollars(final double amount) {
-    return new Money(amount, Currency.getInstance("USD"));
-  }
-
   private long amount;
-
   private Currency currency;
 
   /** Constructeur par défaut. Nécessaire pour Jackson pour la sérialisation JSON. */
@@ -90,6 +68,26 @@ public class Money implements Comparable<Money> {
     this.currency = Objects.requireNonNull(currency);
     this.amount =
         amount.multiply(BigDecimal.valueOf(centFactor())).setScale(0, roundingMode).longValue();
+  }
+
+  /**
+   * Crée une instance de <code>Money</code> représentant un montant en euros (EUR).
+   *
+   * @param amount le montant en euros
+   * @return une nouvelle instance de <code>Money</code> avec la devise EUR
+   */
+  public static Money euros(final double amount) {
+    return new Money(amount, Currency.getInstance("EUR"));
+  }
+
+  /**
+   * Crée une instance de <code>Money</code> représentant un montant en dollars américains (USD).
+   *
+   * @param amount le montant en dollars
+   * @return une nouvelle instance de <code>Money</code> avec la devise USD
+   */
+  public static Money dollars(final double amount) {
+    return new Money(amount, Currency.getInstance("USD"));
   }
 
   /**
