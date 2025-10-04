@@ -16,7 +16,7 @@ public class TransactionDto {
   private Money amount;
   private Set<TagDto> tags;
   private ProviderDto provider;
-   private CategoryDto category;
+  private CategoryDto category;
 
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
@@ -88,6 +88,7 @@ public class TransactionDto {
   public CategoryDto getCategory() {
     return category;
   }
+
   public void setCategory(CategoryDto category) {
     this.category = category;
   }
