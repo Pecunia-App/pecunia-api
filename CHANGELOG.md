@@ -1,3 +1,9 @@
+## 0.6.0 (2025-10-10)
+
+### Feat
+
+- **transaction-category**: delete transaction endpoint + launch google format
+
 ## 0.5.0 (2025-09-26)
 
 ### BREAKING CHANGE
