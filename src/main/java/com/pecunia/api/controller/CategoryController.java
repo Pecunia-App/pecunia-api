@@ -9,6 +9,7 @@ import com.pecunia.api.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,14 +65,12 @@ public class CategoryController {
    * Return all categories from an user.
    *
    * @param userId user id
-   * @param pageable pagination
    * @return noContent or OK
    */
   @GetMapping("/users/{userId}")
   @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
-  public ResponseEntity<Page<CategoryDto>> getAllCategoriesByUser(
-      @PathVariable Long userId, Pageable pageable) {
-    Page<CategoryDto> categories = categoryService.getUserCategories(userId, pageable);
+  public ResponseEntity<List<CategoryDto>> getAllCategoriesByUser(@PathVariable Long userId) {
+    List<CategoryDto> categories = categoryService.getUserCategories(userId);
     return categories.isEmpty()
         ? ResponseEntity.noContent().build()
         : ResponseEntity.ok(categories);
@@ -124,8 +123,8 @@ public class CategoryController {
 
   @GetMapping("/global")
   @Operation(summary = "Retourne toutes les catégories globales", description = "Accessible à tous")
-  public ResponseEntity<Page<CategoryDto>> getGlobalCategories(Pageable pageable) {
-    Page<CategoryDto> categories = categoryService.getGlobalCategories(pageable);
+  public ResponseEntity<List<CategoryDto>> getAllGlobalCategories() {
+    List<CategoryDto> categories = categoryService.getAllGlobalCategories();
     return categories.isEmpty()
         ? ResponseEntity.noContent().build()
         : ResponseEntity.ok(categories);

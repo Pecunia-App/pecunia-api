@@ -8,6 +8,7 @@ import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
 import com.pecunia.api.repository.TagRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -45,12 +46,11 @@ public class TagService {
    * Pagination of all tags from an User.
    *
    * @param userId user id
-   * @param pageable {@link Pageable}
    * @return Pagination of tagDto
    */
-  public Page<TagDto> getUserTags(Long userId, Pageable pageable) {
-    Page<Tag> tags = tagRepository.findByTransactionsWalletUserId(userId, pageable);
-    return tags.map(tagMapper::convertToDto);
+  public List<TagDto> getUserTags(Long userId) {
+    List<Tag> tags = tagRepository.findByTransactionsWalletUserId(userId);
+    return tags.stream().map(tagMapper::convertToDto).toList();
   }
 
   /**

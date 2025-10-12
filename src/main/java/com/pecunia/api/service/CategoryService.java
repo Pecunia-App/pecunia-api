@@ -10,6 +10,7 @@ import com.pecunia.api.model.CategoryType;
 import com.pecunia.api.model.User;
 import com.pecunia.api.repository.CategoryRepository;
 import com.pecunia.api.repository.UserRepository;
+import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,9 +47,9 @@ public class CategoryService {
     return categories.map(categoryMapper::convertToDto);
   }
 
-  public Page<CategoryDto> getUserCategories(Long userId, Pageable pageable) {
-    Page<Category> categories = categoryRepository.findByUserId(userId, pageable);
-    return categories.map(categoryMapper::convertToDto);
+  public List<CategoryDto> getUserCategories(Long userId) {
+    List<Category> categories = categoryRepository.findByUserId(userId);
+    return categories.stream().map(categoryMapper::convertToDto).toList();
   }
 
   public CategoryDto getCategoryById(Long categoryId) {
@@ -116,8 +117,8 @@ public class CategoryService {
                     "la categorie avec l'id" + categoryId + "n'a pas été trouvée."));
   }
 
-  public Page<CategoryDto> getGlobalCategories(Pageable pageable) {
-    Page<Category> categories = categoryRepository.findByIsGlobalTrue(pageable);
-    return categories.map(categoryMapper::convertToDto);
+  public List<CategoryDto> getAllGlobalCategories() {
+    List<Category> categories = categoryRepository.findAllByIsGlobalTrue();
+    return categories.stream().map(categoryMapper::convertToDto).toList();
   }
 }
