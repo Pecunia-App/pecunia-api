@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tags")
@@ -41,9 +42,9 @@ public class TagController {
   @Operation(
       summary = "Return all tags inside a wallet id",
       description = "User id or Role Admin require")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-  public ResponseEntity<Page<TagDto>> getAllTagsByUser(Long userId, Pageable pageable) {
-    Page<TagDto> tags = tagService.getUserTags(userId, pageable);
+  @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+  public ResponseEntity<List<TagDto>> getAllTagsByUser(@PathVariable Long userId) {
+    List<TagDto> tags = tagService.getUserTags(userId);
     return tags.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(tags);
   }
 

@@ -14,6 +14,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class ProviderService {
@@ -41,9 +42,9 @@ public class ProviderService {
     return providers.map(providerMapper::convertToDto);
   }
 
-  public Page<ProviderDto> getUserProviders(Long userId, Pageable pageable) {
-    Page<Provider> providers = providerRepository.findByUserId(userId, pageable);
-    return providers.map(providerMapper::convertToDto);
+  public List<ProviderDto> getUserProviders(Long userId) {
+    List<Provider> providers = providerRepository.findByUserId(userId);
+    return providers.stream().map(providerMapper::convertToDto).toList();
   }
 
   public Page<ProviderDto> searchProviders(Long userId, String searchTerm, Pageable pageable) {

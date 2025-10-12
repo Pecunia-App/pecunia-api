@@ -1,6 +1,7 @@
 package com.pecunia.api.repository;
 
 import com.pecunia.api.model.Tag;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +21,9 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
    * Find Tags from a wallet from an user.
    *
    * @param userId user id
-   * @param pageable page request object
-   * @return pagination tags
+   * @return List tags
    */
-  Page<Tag> findByTransactionsWalletUserId(Long userId, Pageable pageable);
+  List<Tag> findByTransactionsWalletUserId(Long userId);
 
   /**
    * Search by name.
