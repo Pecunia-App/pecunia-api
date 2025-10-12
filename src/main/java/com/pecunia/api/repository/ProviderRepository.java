@@ -1,6 +1,7 @@
 package com.pecunia.api.repository;
 
 import com.pecunia.api.model.Provider;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +16,7 @@ public interface ProviderRepository extends JpaRepository<Provider, Long> {
    * @param pageable pageSize, pageNumber, sort=createdAt,asc or desc
    * @return providers
    */
-  Page<Provider> findByUserId(Long userId, Pageable pageable);
+  List<Provider> findByUserId(Long userId);
 
   Page<Provider> findByProviderNameContainingIgnoreCaseAndTransactionsWalletUserId(
       @Param("providerName") String providerName, Long userId, Pageable pageable);

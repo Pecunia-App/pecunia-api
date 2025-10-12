@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /** Provider Controller. */
 @RestController
@@ -49,18 +50,16 @@ public class ProviderController {
   /**
    * Return all providers from an user.
    *
-   * @param userId user id
-   * @param pageable pagination
+   * @param userId user i
    * @return noContent or OK
    */
   @GetMapping("/users/{userId}")
   @Operation(
       summary = "Return all providers from an user.",
       description = "Role Admin require or login with correct user id.")
-  @CanAccessProvider
-  public ResponseEntity<Page<ProviderDto>> getAllProvidersByUser(
-      @PathVariable Long userId, Pageable pageable) {
-    Page<ProviderDto> providers = providerService.getUserProviders(userId, pageable);
+  @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+  public ResponseEntity<List<ProviderDto>> getAllProvidersByUser(@PathVariable Long userId) {
+    List<ProviderDto> providers = providerService.getUserProviders(userId);
     return providers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(providers);
   }
 
