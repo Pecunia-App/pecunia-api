@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProfilePictureService {
-  private static final int TARGET_SIZE = 32;
+  private static final int TARGET_SIZE = 128;
   private static final long MAX_FILE_SIZE = 1024 * 1024; // 1 MB
 
   private final ProfilePictureRepository profilePictureRepository;
@@ -70,6 +70,8 @@ public class ProfilePictureService {
     Graphics2D g = resizedImage.createGraphics();
     g.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     // Calculer les dimensions pour un recadrage carré
     int size = Math.min(originalImage.getWidth(), originalImage.getHeight());
@@ -82,7 +84,7 @@ public class ProfilePictureService {
 
     // Convertir en bytes
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ImageIO.write(resizedImage, "JPEG", baos);
+    ImageIO.write(resizedImage, "PNG", baos);
     return baos.toByteArray();
   }
 
