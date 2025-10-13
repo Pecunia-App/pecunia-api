@@ -22,4 +22,12 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
    * @return boolean
    */
   boolean existsByIdAndUserId(Long id, Long userId);
+
+  /**
+   * Récupère le wallet d'un utilisateur par son userId.
+   *
+   * @param userId id de l'utilisateur
+   * @return liste des wallets
+   */
+  Optional<Wallet> findByUserId(Long userId);
 }

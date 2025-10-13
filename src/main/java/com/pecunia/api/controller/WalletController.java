@@ -103,6 +103,22 @@ public class WalletController {
   }
 
   /**
+   * Retour d'un wallet par le userId.
+   *
+   * @param id Identifiant d'un user
+   * @return 200 OU 404
+   */
+  @GetMapping("/users/{userId}")
+  @Operation(
+      summary = "Get a specific Wallet by user id",
+      description = "Role Admin require or login with correct user id")
+  @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+  public ResponseEntity<WalletDto> getWalletsByUserId(@PathVariable Long userId) {
+    WalletDto wallet = walletService.getWalletsByUserId(userId);
+    return wallet == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(wallet);
+  }
+
+  /**
    * Modification d'un wallet.
    *
    * @param id Identifiant d'un wallet
