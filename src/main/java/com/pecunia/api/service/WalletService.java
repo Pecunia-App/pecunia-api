@@ -84,6 +84,23 @@ public class WalletService {
   }
 
   /**
+   * Récupère le wallet d'un utilisateur par son userId.
+   *
+   * @param userId id de l'utilisateur
+   * @return wallet de l'utilisateur
+   */
+  public WalletDto getWalletsByUserId(Long userId) {
+    Wallet wallet =
+        walletRepository
+            .findByUserId(userId)
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "le Wallet avec l'id " + userId + " n'a pas été trouvé."));
+    return wallet != null ? walletMapper.convertToDto(wallet) : null;
+  }
+
+  /**
    * Create a Wallet.
    *
    * @param walletCreateDto wallet creation Dto
