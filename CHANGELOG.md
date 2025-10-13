@@ -1,3 +1,13 @@
+## 0.7.0 (2025-10-13)
+
+### Feat
+
+- **category-tag-provider**: withdraw pagination on get all categories, tags and providers
+
+### Fix
+
+- **ci-format**: force JDK version to 21
+
 ## 0.6.0 (2025-10-10)
 
 ### Feat
