@@ -10,11 +10,11 @@ import com.pecunia.api.model.Transaction;
 import com.pecunia.api.model.User;
 import com.pecunia.api.repository.ProviderRepository;
 import com.pecunia.api.repository.UserRepository;
+import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class ProviderService {
