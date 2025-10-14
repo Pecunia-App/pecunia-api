@@ -1,3 +1,15 @@
+## 0.8.0 (2025-10-14)
+
+### Feat
+
+- **wallet**: get a wallet by user id
+- **category-tag-provider**: withdraw pagination on get all categories, tags and providers
+
+### Fix
+
+- **profil-picture**: improve quality and size of profil picture
+- **ci-format**: force JDK version to 21
+
 ## 0.7.0 (2025-10-13)
 
 ### Feat
