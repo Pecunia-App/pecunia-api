@@ -62,7 +62,7 @@ public class TagController {
   @Operation(
       summary = "Create a tag.",
       description = "Role admin require or login with correct user id.")
-  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  @PreAuthorize("#tag.userId == authentication.principal.id or hasRole('ADMIN')")
   public ResponseEntity<TagRequestDto> createTag(@Valid @RequestBody TagRequestDto tag) {
     TagRequestDto savedTag = tagService.create(tag);
     return ResponseEntity.status(HttpStatus.CREATED).body(savedTag);
