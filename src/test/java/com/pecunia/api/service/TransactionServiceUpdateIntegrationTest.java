@@ -68,6 +68,7 @@ class TransactionServiceUpdateIntegrationTest {
 
     testTag = new Tag();
     testTag.setTagName("TestTag");
+    testTag.setUser(testUser);
     testTag = tagRepository.save(testTag);
 
     testProvider = new Provider();
@@ -133,6 +134,7 @@ class TransactionServiceUpdateIntegrationTest {
   void shouldUpdateTagsWithDatabaseConstraints() {
     Tag secondTag = new Tag();
     secondTag.setTagName("second tag");
+    secondTag.setUser(testUser);
     tagRepository.save(secondTag);
 
     TransactionUpdateDto updateDto = new TransactionUpdateDto();
