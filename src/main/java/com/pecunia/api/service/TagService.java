@@ -48,13 +48,13 @@ public class TagService {
   }
 
   /**
-   * Pagination of all tags from an User.
+   * List of all tags from an User.
    *
    * @param userId user id
-   * @return Pagination of tagDto
+   * @return List of tagDto
    */
   public List<TagDto> getUserTags(Long userId) {
-    List<Tag> tags = tagRepository.findByTransactionsWalletUserId(userId);
+    List<Tag> tags = tagRepository.findByUserId(userId);
     return tags.stream().map(tagMapper::convertToDto).toList();
   }
 
