@@ -23,7 +23,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
    * @param userId user id
    * @return List tags
    */
-  List<Tag> findByTransactionsWalletUserId(Long userId);
+  List<Tag> findByUserId(Long userId);
 
   /**
    * Search by name.
