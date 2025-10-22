@@ -38,6 +38,9 @@ public class User extends BaseEntity implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<Provider> providers = new HashSet<>();
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<Tag> tags = new HashSet<>();
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());

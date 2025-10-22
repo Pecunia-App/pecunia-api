@@ -6,7 +6,9 @@ import com.pecunia.api.exception.ResourceNotFoundException;
 import com.pecunia.api.mapper.TagMapper;
 import com.pecunia.api.model.Tag;
 import com.pecunia.api.model.Transaction;
+import com.pecunia.api.model.User;
 import com.pecunia.api.repository.TagRepository;
+import com.pecunia.api.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
@@ -19,10 +21,13 @@ import org.springframework.stereotype.Service;
 public class TagService {
   private final TagRepository tagRepository;
   private final TagMapper tagMapper;
+  private final UserRepository userRepository;
 
-  public TagService(TagRepository tagRepository, TagMapper tagMapper) {
+  public TagService(
+      TagRepository tagRepository, TagMapper tagMapper, UserRepository userRepository) {
     this.tagRepository = tagRepository;
     this.tagMapper = tagMapper;
+    this.userRepository = userRepository;
   }
 
   private static void validateTagCreation(TagRequestDto tagCreateDto) {
@@ -76,7 +81,11 @@ public class TagService {
    */
   public TagRequestDto create(TagRequestDto tagCreateDto) {
     validateTagCreation(tagCreateDto);
-    Tag tag = tagMapper.convertCreateDtoToEntity(tagCreateDto);
+    User user =
+        userRepository
+            .findById(tagCreateDto.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    Tag tag = tagMapper.convertCreateDtoToEntity(tagCreateDto, user);
     Tag savedTag = tagRepository.save(tag);
     return tagMapper.convertToCreateDto(savedTag);
   }

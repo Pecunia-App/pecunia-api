@@ -3,6 +3,7 @@ package com.pecunia.api.mapper;
 import com.pecunia.api.dto.tag.TagDto;
 import com.pecunia.api.dto.tag.TagRequestDto;
 import com.pecunia.api.model.Tag;
+import com.pecunia.api.model.User;
 import org.springframework.stereotype.Component;
 
 /** TagMapper. */
@@ -22,9 +23,10 @@ public class TagMapper {
     return dto;
   }
 
-  public Tag convertCreateDtoToEntity(TagRequestDto dto) {
+  public Tag convertCreateDtoToEntity(TagRequestDto dto, User user) {
     Tag tag = new Tag();
     tag.setTagName(dto.getTagName());
+    tag.setUser(user);
     return tag;
   }
 
