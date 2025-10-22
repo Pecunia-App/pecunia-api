@@ -1,3 +1,13 @@
+## 0.9.0 (2025-10-22)
+
+### Feat
+
+- **tag**: add relation between tags and user
+
+### Fix
+
+- **tag**: create query to find by userId from tag instead from wallet
+
 ## 0.8.0 (2025-10-14)
 
 ### Feat
