@@ -1,3 +1,9 @@
+## 0.10.0 (2025-10-23)
+
+### Feat
+
+- **category-upsert-dto**: change maxLenght of category name to 20
+
 ## 0.9.0 (2025-10-22)
 
 ### Feat
