@@ -1,4 +1,4 @@
-package com.pecunia.api.security;
+package com.pecunia.api.controller;
 
 import com.pecunia.api.dto.ProfilePictureDTO;
 import com.pecunia.api.exception.DuplicateProfilePictureException;
