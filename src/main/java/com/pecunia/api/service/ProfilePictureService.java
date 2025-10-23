@@ -15,13 +15,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProfilePictureService {
+  private static final Logger logger = LoggerFactory.getLogger(ProfilePictureService.class);
   private static final int TARGET_SIZE = 128;
   private static final long MAX_FILE_SIZE = 1024 * 1024; // 1 MB
 
@@ -39,7 +41,6 @@ public class ProfilePictureService {
   }
 
   private void validateImageFormat(MultipartFile file) {
-
     if (file.getSize() > MAX_FILE_SIZE) {
       throw new RuntimeException("Fichier trop volumineux. Taille maximale : 1 MB.");
     }
@@ -63,7 +64,7 @@ public class ProfilePictureService {
   public byte[] resizeAndValidateImage(MultipartFile file) throws IOException {
     BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
-    // Créer une nouvelle image carrée de 32x32
+    // Créer une nouvelle image carrée de 128x128
     BufferedImage resizedImage =
         new BufferedImage(TARGET_SIZE, TARGET_SIZE, BufferedImage.TYPE_INT_RGB);
 
@@ -78,7 +79,7 @@ public class ProfilePictureService {
     int x = (originalImage.getWidth() - size) / 2;
     int y = (originalImage.getHeight() - size) / 2;
 
-    // Dessiner en 32x32
+    // Dessiner en 128x128
     g.drawImage(originalImage.getSubimage(x, y, size, size), 0, 0, TARGET_SIZE, TARGET_SIZE, null);
     g.dispose();
 
@@ -89,6 +90,7 @@ public class ProfilePictureService {
   }
 
   public ProfilePictureDTO saveProfilePicture(Long userId, MultipartFile file) throws IOException {
+    logger.info("Saving profile picture for userId: {}", userId);
     validateImageFormat(file);
     byte[] pictureData = resizeAndValidateImage(file);
 
@@ -119,10 +121,50 @@ public class ProfilePictureService {
     user.setProfilePicture(profilePicture);
     userRepository.save(user);
 
+    logger.info("Profile picture saved successfully for userId: {}", userId);
+    return profilePictureMapper.convertToDTO(profilePicture);
+  }
+
+  public ProfilePictureDTO saveOrUpdateProfilePicture(Long userId, MultipartFile file)
+      throws IOException {
+    logger.info("Save or update profile picture for userId: {}", userId);
+    validateImageFormat(file);
+    byte[] pictureData = resizeAndValidateImage(file);
+
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+    ProfilePicture profilePicture = user.getProfilePicture();
+
+    if (profilePicture == null) {
+      // Créer une nouvelle photo
+      profilePicture = new ProfilePicture();
+      profilePicture.setPicture(pictureData);
+      profilePicture.setUser(user);
+      profilePicture = profilePictureRepository.save(profilePicture);
+      user.setProfilePicture(profilePicture);
+    } else {
+      // Mettre à jour la photo existante
+      String newHash = DigestUtils.md5DigestAsHex(pictureData);
+      String existingHash = DigestUtils.md5DigestAsHex(profilePicture.getPicture());
+
+      if (newHash.equals(existingHash)) {
+        throw new DuplicateProfilePictureException("L'image est identique à l'existante");
+      }
+
+      profilePicture.setPicture(pictureData);
+      profilePicture = profilePictureRepository.save(profilePicture);
+    }
+
+    userRepository.save(user);
+    logger.info("Profile picture saved or updated successfully for userId: {}", userId);
     return profilePictureMapper.convertToDTO(profilePicture);
   }
 
   public ProfilePictureDTO getProfilePicture(Long userId) {
+    logger.info("Getting profile picture for userId: {}", userId);
     User user =
         userRepository
             .findById(userId)
@@ -135,8 +177,51 @@ public class ProfilePictureService {
     return profilePictureMapper.convertToDTO(user.getProfilePicture());
   }
 
+  /** Récupère les bytes de la photo de profil ou retourne une image par défaut */
+  public byte[] getProfilePictureBytesOrDefault(Long userId) {
+    logger.info("Getting profile picture bytes or default for userId: {}", userId);
+    try {
+      User user =
+          userRepository
+              .findById(userId)
+              .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+      if (user.getProfilePicture() != null) {
+        logger.info("Returning profile picture bytes for userId: {}", userId);
+        return user.getProfilePicture().getPicture();
+      }
+    } catch (Exception e) {
+      logger.warn("Could not load profile picture for userId: {}, using default", userId, e);
+    }
+
+    // Retourner une image par défaut (carré gris 128x128)
+    return getDefaultProfilePicture();
+  }
+
+  /** Génère une image par défaut (carré gris) */
+  private byte[] getDefaultProfilePicture() {
+    try {
+      BufferedImage defaultImage =
+          new BufferedImage(TARGET_SIZE, TARGET_SIZE, BufferedImage.TYPE_INT_RGB);
+      // Remplir de gris clair
+      for (int x = 0; x < TARGET_SIZE; x++) {
+        for (int y = 0; y < TARGET_SIZE; y++) {
+          defaultImage.setRGB(x, y, 0xCCCCCC); // Gris clair
+        }
+      }
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ImageIO.write(defaultImage, "PNG", baos);
+      return baos.toByteArray();
+    } catch (IOException e) {
+      logger.error("Error generating default profile picture", e);
+      return new byte[0];
+    }
+  }
+
   public ProfilePictureDTO updateProfilePicture(Long userId, MultipartFile file)
       throws IOException {
+    logger.info("Updating profile picture for userId: {}", userId);
     validateImageFormat(file);
     byte[] pictureData = resizeAndValidateImage(file);
 
@@ -160,22 +245,28 @@ public class ProfilePictureService {
     profilePicture.setPicture(pictureData);
     profilePicture = profilePictureRepository.save(profilePicture);
 
+    logger.info("Profile picture updated successfully for userId: {}", userId);
     return profilePictureMapper.convertToDTO(profilePicture);
   }
 
-  public boolean deleteProfilePicture(@PathVariable Long userId) {
+  public boolean deleteProfilePicture(Long userId) {
+    logger.info("Deleting profile picture for userId: {}", userId);
     User user =
         userRepository
             .findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur introuvable."));
+
     if (user.getProfilePicture() == null) {
+      logger.warn("No profile picture found for userId: {}", userId);
       return false;
     }
+
     ProfilePicture profilePicture = user.getProfilePicture();
     user.setProfilePicture(null);
     userRepository.save(user);
     profilePictureRepository.delete(profilePicture);
 
+    logger.info("Profile picture deleted successfully for userId: {}", userId);
     return true;
   }
 }
