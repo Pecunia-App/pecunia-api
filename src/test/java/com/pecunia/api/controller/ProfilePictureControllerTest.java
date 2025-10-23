@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.pecunia.api.dto.ProfilePictureDTO;
 import com.pecunia.api.security.JwtAuthenticationFilter;
 import com.pecunia.api.security.JwtService;
+import com.pecunia.api.security.ProfilePictureController;
 import com.pecunia.api.service.CustomUserDetailsService;
 import com.pecunia.api.service.ProfilePictureService;
 import java.util.Base64;
