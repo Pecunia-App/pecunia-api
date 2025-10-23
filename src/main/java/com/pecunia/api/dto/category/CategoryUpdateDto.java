@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class CategoryUpdateDto {
-  @Size(min = 1, max = 10, message = "Le nom de la catégorie ne doit pas dépasser 10 caractères.")
+  @Size(min = 1, max = 20, message = "Le nom de la catégorie ne doit pas dépasser 10 caractères.")
   private String categoryName;
 
   private String icon;
