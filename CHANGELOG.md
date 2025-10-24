@@ -1,3 +1,10 @@
+## 0.10.1 (2025-10-24)
+
+### Fix
+
+- **profilepagecontrolle-and-test**: modif controller to modify profile picture
+- **profilePicture-files**: add possibility to change profile picture
+
 ## 0.10.0 (2025-10-23)
 
 ### Feat
