@@ -43,6 +43,6 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           scp -i ~/.ssh/id_ed25519 .env.production ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/pecunia/pecunia/.env.production
-          ssh -i ~/.ssh/id_ed25519 ${VPS_USER}@${VPS_HOST} "/home/pecunia/pecunia/deploy.sh"
+          ssh -i ~/.ssh/id_ed25519 ${VPS_USER}@${VPS_HOST} "/home/pecunia/pecunia/deploy.sh backend"
       - name: cleanup
         run: rm -rf ~/.ssh
